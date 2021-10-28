@@ -1,0 +1,32 @@
+sepalLength: real	 Min=4.3, Max=7.9 
+sepalWidth: real	 Min=2.0, Max=4.4 
+petalLength: real	 Min=1.0, Max=6.9 
+petalWidth: real	 Min=0.1, Max=2.5 
+Class Iris-setosa: 50, Class Iris-versicolor: 50, Class Iris-virginica: 50, 
+Class '0' represents 'Iris-setosa'
+Class '1' represents 'Iris-versicolor'
+Class '2' represents 'Iris-virginica'
+# of patterns: 150, # of attributes: 4, # of classes: 3
+# of patterns with missing attribute(s): 0
+
+# of patterns for each class per partition
+0 - tra: 45	 45	 45	 Total: 135
+0 - tst: 5	 5	 5	 Total: 15
+1 - tra: 45	 45	 45	 Total: 135
+1 - tst: 5	 5	 5	 Total: 15
+2 - tra: 45	 45	 45	 Total: 135
+2 - tst: 5	 5	 5	 Total: 15
+3 - tra: 45	 45	 45	 Total: 135
+3 - tst: 5	 5	 5	 Total: 15
+4 - tra: 45	 45	 45	 Total: 135
+4 - tst: 5	 5	 5	 Total: 15
+5 - tra: 45	 45	 45	 Total: 135
+5 - tst: 5	 5	 5	 Total: 15
+6 - tra: 45	 45	 45	 Total: 135
+6 - tst: 5	 5	 5	 Total: 15
+7 - tra: 45	 45	 45	 Total: 135
+7 - tst: 5	 5	 5	 Total: 15
+8 - tra: 45	 45	 45	 Total: 135
+8 - tst: 5	 5	 5	 Total: 15
+9 - tra: 45	 45	 45	 Total: 135
+9 - tst: 5	 5	 5	 Total: 15
