@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
 
+import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import cilabo.data.DataSet;
-import cilabo.data.impl.SimpleDatasetManager;
+import cilabo.data.impl.TrainTestDatasetManager;
+import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.main.Consts;
 import cilabo.utility.Input;
@@ -72,7 +74,8 @@ public class HybridMoFGBMLwithNSGAII {
 		JMetalRandom.getInstance().setSeed(Consts.RAND_SEED);
 
 		/* Load Dataset ======================== */
-		SimpleDatasetManager datasetManager = loadIrisTrial00();
+		TrainTestDatasetManager datasetManager = loadIrisTrial00();
+//		TrainTestDatasetManager datasetManager = loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
 
 		/* Run MoFGBML algorithm =============== */
 		DataSet train = datasetManager.getTrains().get(0);
@@ -87,11 +90,31 @@ public class HybridMoFGBMLwithNSGAII {
 	}
 
 	/**
+	 * ファイル名を指定してデータセットをロードする関数
+	 * @param trainFile String
+	 * @param testFile String
+	 * @return DatasetManager
+	 */
+	public static TrainTestDatasetManager loadTrainTestFiles(String trainFile, String testFile) {
+		TrainTestDatasetManager manager = new TrainTestDatasetManager();
+
+		DataSet train = new DataSet();
+		Input.inputSingleLabelDataSet(train, trainFile);
+		manager.addTrains(train);
+
+		DataSet test = new DataSet();
+		Input.inputSingleLabelDataSet(test, testFile);
+		manager.addTests(test);
+
+		return manager;
+	}
+
+	/**
 	 * irisのtrial00をロードする関数.
 	 * @return DatasetManager
 	 */
-	public static SimpleDatasetManager loadIrisTrial00() {
-		SimpleDatasetManager manager = new SimpleDatasetManager();
+	public static TrainTestDatasetManager loadIrisTrial00() {
+		TrainTestDatasetManager manager = new TrainTestDatasetManager();
 		String sep = File.separator;
 		String fileName;
 
@@ -122,7 +145,11 @@ public class HybridMoFGBMLwithNSGAII {
 		/* MOP: Multi-objective Optimization Problem */
 		MOP1<IntegerSolution> problem = new MOP1<>(Consts.RAND_SEED, train);
 
+		/* Crossover: Hybrid-style GBML specific crossover operator. */
+		double crossoverProbability = 1.0;
+		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT);
 
+		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
 
 
 	}

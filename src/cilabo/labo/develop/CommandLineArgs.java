@@ -16,11 +16,15 @@ public class CommandLineArgs extends AbstractArgs {
 	public static String experimentID;
 	/** ForkJoinPoolの並列コア数 */
 	public static int parallelCores;
+	/** 学習用データセット ファイル名 */
+	public static String trainFile;
+	/** 評価用データセット ファイル名 */
+	public static String testFile;
 
 	// ************************************************************
 	@Override
 	protected void load(String[] args) {
-		int n = 1;
+		int n = 6;
 		if(args.length < n) {
 			System.out.println("Need n=" + String.valueOf(n) + " arguments.");
 			System.out.println("---");
@@ -39,8 +43,10 @@ public class CommandLineArgs extends AbstractArgs {
 		Consts.EXPERIMENT_ID_DIR = Consts.ALGORITHM_ID_DIR + File.separator + dataName+"_"+experimentID;
 		Output.mkdirs(Consts.EXPERIMENT_ID_DIR);
 
-
 		parallelCores = Integer.parseInt(args[3]);
+
+		trainFile = args[4];
+		testFile = args[5];
 
 	}
 }

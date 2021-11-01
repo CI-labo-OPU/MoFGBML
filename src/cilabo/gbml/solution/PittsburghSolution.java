@@ -16,7 +16,7 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 	// ************************************************************
 	// Fields
 	/**   */
-	List<MichiganSolution> michiganPopulation;
+	List<IntegerSolution> michiganPopulation;
 
 	/**  */
 	Classifier classifier;
@@ -45,6 +45,8 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 		// Radix sort Michigan solution list
 		SortMichiganPopulation.radixSort(michiganPopulation);
 
+		this.michiganPopulation = michiganPopulation;
+
 		// Build classifier from michigan population.
 		classifier = new RuleBasedClassifier();
 		((RuleBasedClassifier)classifier).setClassification(classification);
@@ -63,7 +65,7 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 		super(solution);
 		michiganPopulation = new ArrayList<>(solution.getMichiganPopulation().size());
 		for(int i = 0; i < michiganPopulation.size(); i++) {
-			michiganPopulation.add(i, solution.getMichiganPopulation().get(i).copy());
+			michiganPopulation.add(i, (IntegerSolution)solution.getMichiganPopulation().get(i).copy());
 		}
 		classifier = solution.getClassifier().copy();
 	}
@@ -76,9 +78,18 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 		return new PittsburghSolution(this);
 	}
 
+	/* Setters */
+	public void setMichiganPopulation(List<IntegerSolution> solutions) {
+		this.michiganPopulation = solutions;
+	}
+
 	/* Getters */
-	public List<MichiganSolution> getMichiganPopulation() {
+	public List<IntegerSolution> getMichiganPopulation() {
 		return this.michiganPopulation;
+	}
+
+	public List<Pair<Integer, Integer>> getBounds() {
+		return this.bounds;
 	}
 
 	public Classifier getClassifier() {

@@ -2,7 +2,11 @@ package cilabo.gbml.problem.impl.pittsburgh;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
@@ -33,6 +37,9 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	private Knowledge knowledge;
 	private Classification classification;
 	private DataSet evaluationDataset;
+	private float[][] params = HomoTriangle_2_3_4_5.getParams();
+
+
 
 	// ************************************
 	public MOP1(int seed, DataSet train) {
@@ -45,7 +52,7 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		// Initialization
 		this.knowledge = HomoTriangleKnowledgeFactory.builder()
 				.dimension(train.getNdim())
-				.params(HomoTriangle_2_3_4_5.getParams())
+				.params(params)
 				.build()
 				.create();
 		//TODO Heuristic rule generation methodのAntecedentFactoryに変更
@@ -65,7 +72,7 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		List<Integer> upperLimit = new ArrayList<>(getNumberOfVariables());
 		for(int i = 0; i < getNumberOfVariables(); i++) {
 			lowerLimit.add(0);
-			upperLimit.add(knowledge.getFuzzySetNum(i));
+			upperLimit.add(params.length);
 		}
 		setVariableBounds(lowerLimit, upperLimit);
 	}
@@ -88,16 +95,28 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 
 	@Override
 	public PittsburghSolution createSolution() {
+		// Boundary
+		List<Integer> lowerBounds = new ArrayList<>(antecedentFactory.create().getDimension());
+		List<Integer> upperBounds = new ArrayList<>(antecedentFactory.create().getDimension());
+		for(int i = 0; i < antecedentFactory.create().getDimension(); i++) {
+			lowerBounds.add(0);
+			upperBounds.add(params.length);
+		}
+		List<Pair<Integer, Integer>> michiganBounds =
+		        IntStream.range(0, lowerBounds.size())
+		            .mapToObj(i -> new ImmutablePair<>(lowerBounds.get(i), upperBounds.get(i)))
+		            .collect(Collectors.toList());
+
+		// Rules
 		List<IntegerSolution> michiganPopulation = new ArrayList<>();
 		for(int i = 0; i < Consts.INITIATION_RULE_NUM; i++) {
 			Antecedent antecedent = antecedentFactory.create();
 			Consequent consequent = consequentFactory.learning(antecedent);
 
-			MichiganSolution solution = new MichiganSolution(this.getBounds(),
-															 this.getNumberOfObjectives(),
-															 this.getNumberOfConstraints(),
-															 antecedent,
-															 consequent);
+			MichiganSolution solution = new MichiganSolution(michiganBounds,
+															 1,	// Number of objectives for Michigan solution
+															 0,	// Number of constraints for Michigan solution
+															 antecedent, consequent);
 			michiganPopulation.add(solution);
 		}
 
