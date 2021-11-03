@@ -66,7 +66,7 @@ public class HybridMoFGBMLwithNSGAII {
 		/* ********************************************************* */
 		System.out.println("==== EXPERIMENT =====");
 		Date start = new Date();
-		System.out.println("START: "+ln + start);
+		System.out.println("START: " + start);
 
 		/* Random Number ======================= */
 		Consts.RAND_SEED = 2020;
@@ -84,7 +84,7 @@ public class HybridMoFGBMLwithNSGAII {
 		/* ===================================== */
 
 		Date end = new Date();
-		System.out.println("END: "+ln + end);
+		System.out.println("END: " + end);
 		System.out.println("=====================");
 		/* ********************************************************* */
 	}
