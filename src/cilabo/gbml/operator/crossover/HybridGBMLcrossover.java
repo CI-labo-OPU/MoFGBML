@@ -11,8 +11,6 @@ import org.uma.jmetal.util.pseudorandom.BoundedRandomGenerator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.RandomGenerator;
 
-import cilabo.main.Consts;
-
 public class HybridGBMLcrossover implements CrossoverOperator<IntegerSolution> {
 
 	private double crossoverProbability;
@@ -20,15 +18,20 @@ public class HybridGBMLcrossover implements CrossoverOperator<IntegerSolution> {
 	BoundedRandomGenerator<Integer> selectRandomGenerator;
 
 	private double michiganOperationProbability;
+	CrossoverOperator<IntegerSolution> michiganX;
+	CrossoverOperator<IntegerSolution> pittsburghX;
 
 
 	/** Constructor */
-	public HybridGBMLcrossover(double crossoverProbability, double michiganOperationProbability) {
+	public HybridGBMLcrossover(double crossoverProbability, double michiganOperationProbability,
+							   CrossoverOperator<IntegerSolution> michiganX, CrossoverOperator<IntegerSolution> pittsburghX) {
 		this(crossoverProbability,
 			 () -> JMetalRandom.getInstance().nextDouble(),
 			 (a, b) -> JMetalRandom.getInstance().nextInt(a, b));
 
 		this.michiganOperationProbability = michiganOperationProbability;
+		this.michiganX = michiganX;
+		this.pittsburghX = pittsburghX;
 	}
 
 	/** Constructor */
@@ -82,9 +85,6 @@ public class HybridGBMLcrossover implements CrossoverOperator<IntegerSolution> {
 	public List<IntegerSolution> doCrossover(
 			double probability, IntegerSolution parent1, IntegerSolution parent2)
 	{
-		PittsburghCrossover pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
-		MichiganOperation michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT);
-
 		List<IntegerSolution> offspring = new ArrayList<>();
 
 		if(crossoverRandomGenerator.getRandomValue() < probability) {/* Do crossover */
@@ -95,11 +95,16 @@ public class HybridGBMLcrossover implements CrossoverOperator<IntegerSolution> {
 
 			if(crossoverRandomGenerator.getRandomValue() < p) {
 				/* Michigan operation */
-				offspring = michiganX.doCrossover(michiganX.getCrossoverProbability(), parent1);
+				List<IntegerSolution> parents = new ArrayList<>();
+				parents.add(parent1);
+				offspring = michiganX.execute(parents);
 			}
 			else {
 				/* Pittsburgh operation */
-				offspring = pittsburghX.doCrossover(pittsburghX.getCrossoverProbability(), parent1, parent2);
+				List<IntegerSolution> parents = new ArrayList<>();
+				parents.add(parent1);
+				parents.add(parent2);
+				offspring = pittsburghX.execute(parents);
 			}
 		}
 		else {/* Don't crossover */

@@ -21,6 +21,9 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 	/**  */
 	Classifier classifier;
 
+	/** */
+	Classification classification;
+
 	// ************************************************************
 	// Constructor
 
@@ -58,6 +61,8 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 				setVariable(i*michigan.getNumberOfVariables() + j, michigan.getVariable(j));
 			}
 		}
+
+		this.classification = classification;
 	}
 
 	/** Copy constructor */
@@ -81,6 +86,18 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 	/* Setters */
 	public void setMichiganPopulation(List<IntegerSolution> solutions) {
 		this.michiganPopulation = solutions;
+
+		// Build classifier from michigan population.
+		classifier = new RuleBasedClassifier();
+		((RuleBasedClassifier)classifier).setClassification(classification);
+		for(int i = 0; i < michiganPopulation.size(); i++) {
+			IntegerSolution michigan = michiganPopulation.get(i);
+			((RuleBasedClassifier)classifier).addRule(((MichiganSolution)michigan).getRule());
+			// Set variable from michigan-type solution.
+			for(int j = 0; j < michigan.getNumberOfVariables(); j++) {
+				setVariable(i*michigan.getNumberOfVariables() + j, michigan.getVariable(j));
+			}
+		}
 	}
 
 	/* Getters */

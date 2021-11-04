@@ -12,6 +12,8 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
+import cilabo.gbml.operator.crossover.MichiganOperation;
+import cilabo.gbml.operator.crossover.PittsburghCrossover;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.main.Consts;
 import cilabo.utility.Input;
@@ -147,7 +149,15 @@ public class HybridMoFGBMLwithNSGAII {
 
 		/* Crossover: Hybrid-style GBML specific crossover operator. */
 		double crossoverProbability = 1.0;
-		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT);
+		/* Michigan operation */
+		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
+																			 problem.getKnowledge(),
+																			 problem.getConsequentFactory());
+		/* Pittsburgh operation */
+		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
+		/* Hybrid-style crossover */
+		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
+																				michiganX, pittsburghX);
 
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
 

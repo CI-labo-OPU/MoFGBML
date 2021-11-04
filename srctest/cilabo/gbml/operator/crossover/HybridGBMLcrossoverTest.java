@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
@@ -43,7 +44,17 @@ public class HybridGBMLcrossoverTest {
 //		double michiganOperationProbability = Consts.MICHIGAN_OPE_RT;
 		double michiganOperationProbability = 1.0;	// Only Michigan operation
 //		double michiganOperationProbability = 0.0;	// Only Pittsburgh operation
-		HybridGBMLcrossover crossover = new HybridGBMLcrossover(probability, michiganOperationProbability);
+
+		/* Michigan operation*/
+		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
+				 															 problem.getKnowledge(),
+				 															 problem.getConsequentFactory());
+		/* Pittsburgh operation */
+		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
+		/* Hybrid-style crossover */
+		HybridGBMLcrossover crossover = new HybridGBMLcrossover(probability, michiganOperationProbability,
+																michiganX, pittsburghX);
+
 		List<IntegerSolution> offspring = crossover.execute(solutions);
 		System.out.println(offspring);
 	}
