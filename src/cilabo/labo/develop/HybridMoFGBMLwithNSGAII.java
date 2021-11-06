@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
+import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
@@ -14,6 +15,7 @@ import cilabo.data.impl.TrainTestDatasetManager;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
 import cilabo.gbml.operator.crossover.PittsburghCrossover;
+import cilabo.gbml.operator.mutation.PittsburghMutation;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.main.Consts;
 import cilabo.utility.Input;
@@ -158,8 +160,10 @@ public class HybridMoFGBMLwithNSGAII {
 		/* Hybrid-style crossover */
 		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
 																				michiganX, pittsburghX);
-
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(1.0,
+																			problem.getKnowledge(),
+																			problem.getConsequentFactory());
 
 
 	}
