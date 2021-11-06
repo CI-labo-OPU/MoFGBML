@@ -58,7 +58,7 @@ public class HybridGBMLcrossoverTest {
 		double probability = 1.0;
 //		double michiganOperationProbability = Consts.MICHIGAN_OPE_RT;
 //		double michiganOperationProbability = 1.0;	// Only Michigan operation: OK
-		double michiganOperationProbability = 0.0;	// Only Pittsburgh operation
+		double michiganOperationProbability = 0.0;	// Only Pittsburgh operation: OK
 
 		/* Michigan operation*/
 		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
