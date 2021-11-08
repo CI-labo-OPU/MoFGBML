@@ -19,7 +19,6 @@ import org.uma.jmetal.component.selection.MatingPoolSelection;
 import org.uma.jmetal.component.selection.impl.NaryTournamentMatingPoolSelection;
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.variation.Variation;
-import org.uma.jmetal.component.variation.impl.CrossoverAndMutationVariation;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
@@ -30,6 +29,9 @@ import org.uma.jmetal.util.comparator.MultiComparator;
 import org.uma.jmetal.util.observable.Observable;
 import org.uma.jmetal.util.observable.ObservableEntity;
 import org.uma.jmetal.util.observable.impl.DefaultObservable;
+
+import cilabo.fuzzy.rule.consequent.ConsequentFactory;
+import cilabo.gbml.component.variation.CrossoverAndMutationAndPittsburghLearningVariation;
 
 public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvolutionaryAlgorithm<S, List<S>>
 										implements ObservableEntity {
@@ -68,7 +70,8 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 			CrossoverOperator<S> crossoverOperator,
 			MutationOperator<S> mutationOperator,
 			Termination termination,
-			InitialSolutionsCreation<S> initialSolutionsCreation) {
+			InitialSolutionsCreation<S> initialSolutionsCreation,
+			ConsequentFactory consequentFactory) {
 		/* Constructor Body */
 		this.problem = problem;
 
@@ -91,8 +94,8 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 						ranking, densityEstimator, Replacement.RemovalPolicy.oneShot);
 
 		this.variation =
-				new CrossoverAndMutationVariation<>(
-						offspringPopulationSize, crossoverOperator, mutationOperator);
+				new CrossoverAndMutationAndPittsburghLearningVariation<>(
+						offspringPopulationSize, crossoverOperator, mutationOperator, consequentFactory);
 
 		this.selection =
 				new NaryTournamentMatingPoolSelection<>(

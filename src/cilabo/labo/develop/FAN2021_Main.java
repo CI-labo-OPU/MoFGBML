@@ -163,7 +163,7 @@ public class FAN2021_Main {
 		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
 																				michiganX, pittsburghX);
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
-		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), problem.getConsequentFactory());
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
 
 
 

@@ -7,37 +7,32 @@ import org.uma.jmetal.operator.Operator;
 
 import cilabo.data.Pattern;
 import cilabo.fuzzy.knowledge.Knowledge;
-import cilabo.fuzzy.rule.Rule;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
-import cilabo.fuzzy.rule.consequent.Consequent;
-import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.main.Consts;
 import cilabo.utility.Random;
 
 /**
- * 誤識別パターン集合を受けとり，ヒューリスティクルール生成法によって生成されたルール集合を返す.
+ * 誤識別パターン集合を受けとり，ヒューリスティクルール生成法によって生成された前件部を返す.
  *
  */
-public class HeuristicRuleGeneration implements Operator<List<Pattern>, List<Rule>>{
+public class HeuristicRuleGeneration implements Operator<List<Pattern>, List<Antecedent>>{
 	Knowledge knowledge;
-	ConsequentFactory consequentFactory;
 
-	public HeuristicRuleGeneration(Knowledge knowledge, ConsequentFactory consequentFactory) {
+	public HeuristicRuleGeneration(Knowledge knowledge) {
 		this.knowledge = knowledge;
-		this.consequentFactory = consequentFactory;
 	}
 
 
 	@Override
-	public List<Rule> execute(List<Pattern> erroredPatterns) {
-		List<Rule> generatedRules = new ArrayList<>();
+	public List<Antecedent> execute(List<Pattern> erroredPatterns) {
+		List<Antecedent> generatedRules = new ArrayList<>();
 		for(int i = 0; i < erroredPatterns.size(); i++) {
 			generatedRules.add(heuristicRuleGeneration(erroredPatterns.get(i)));
 		}
 		return generatedRules;
 	}
 
-	public Rule heuristicRuleGeneration(Pattern pattern) {
+	public Antecedent heuristicRuleGeneration(Pattern pattern) {
 		/** Number of attribute. */
 		int dimension = pattern.getInputVector().getVector().length;
 		/** Ratio of don't care
@@ -89,23 +84,14 @@ public class HeuristicRuleGeneration implements Operator<List<Pattern>, List<Rul
 			}
 		}
 
-		Antecedent antecedent = Antecedent.builder()
-									.knowledge(knowledge)
-									.antecedentIndex(antecedentIndex)
-									.build();
-		Consequent consequent = this.consequentFactory.learning(antecedent);
-		return Rule.builder()
-				.antecedent(antecedent)
-				.consequent(consequent)
-				.build();
+		return Antecedent.builder()
+							.knowledge(knowledge)
+							.antecedentIndex(antecedentIndex)
+							.build();
 	}
 
 	public Knowledge getKnowledge() {
 		return this.knowledge;
-	}
-
-	public ConsequentFactory getConsequentFactory() {
-		return this.consequentFactory;
 	}
 
 }

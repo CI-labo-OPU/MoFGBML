@@ -21,9 +21,48 @@ import cilabo.utility.Input;
 
 public class HybridGBMLcrossoverTest {
 	@Test
+	public void testMichiganX() {
+		String sep = File.separator;
+		// Load "Iris" dataset
+		String dataName = "dataset" + sep + "iris" + sep + "a0_0_iris-10tra.dat";
+		DataSet train = new DataSet();
+		Input.inputSingleLabelDataSet(train, dataName);
+
+		JMetalRandom.getInstance().setSeed(20);
+
+		//Problem
+		MOP1<IntegerSolution> problem = new MOP1<>(Consts.RAND_SEED, train);
+		Classification classification = new SingleWinnerRuleSelection();
+		problem.setClassification(classification);
+
+		// Parents
+		IntegerSolution parent = problem.createSolution();
+		List<IntegerSolution> solutions = new ArrayList<>();
+		solutions.add(parent);
+
+		// Michigan Evaluation
+		ProblemMichiganFGBML<IntegerSolution> michiganProblem = new ProblemMichiganFGBML<>(Consts.RAND_SEED, train);
+		michiganProblem.michiganEvaluate(((PittsburghSolution)parent).getMichiganPopulation());
+		// Add errored patterns to parents
+		List<Integer> erroredPatternsId = new ArrayList<>();
+		erroredPatternsId.add(0);
+		erroredPatternsId.add(2);
+		parent.setAttribute((new ErroredPatternsAttribute<>()).getAttributeId(), erroredPatternsId);
+
+		/* Michigan operation*/
+		MichiganOperation michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
+				 											problem.getKnowledge(),
+				 											problem.getConsequentFactory());
+		String doCrossover = michiganX.doCrossover(1.0, parent).get(0).toString();
+
+		System.out.println("doCrossover");
+		System.out.println(doCrossover);
+	}
+
+	@Test
 	public void testExecute() {
 		String sep = File.separator;
-		// Load "Pima" dataset
+		// Load "Iris" dataset
 		String dataName = "dataset" + sep + "iris" + sep + "a0_0_iris-10tra.dat";
 		DataSet train = new DataSet();
 		Input.inputSingleLabelDataSet(train, dataName);

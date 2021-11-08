@@ -10,11 +10,8 @@ import org.uma.jmetal.util.pseudorandom.BoundedRandomGenerator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.RandomGenerator;
 
+import cilabo.data.DataSet;
 import cilabo.fuzzy.knowledge.Knowledge;
-import cilabo.fuzzy.rule.antecedent.Antecedent;
-import cilabo.fuzzy.rule.consequent.Consequent;
-import cilabo.fuzzy.rule.consequent.ConsequentFactory;
-import cilabo.gbml.solution.MichiganSolution;
 import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.utility.Random;
 
@@ -23,36 +20,36 @@ public class PittsburghMutation implements MutationOperator<IntegerSolution> {
 	private RandomGenerator<Double> randomGenerator;
 	private BoundedRandomGenerator<Integer> intRandomGenerator;
 	private Knowledge knowledge;
-	private ConsequentFactory consequentFactory;
+	private DataSet train;
 
 	/** Constructor */
-	public PittsburghMutation(Knowledge knowledge, ConsequentFactory consequentFactory) {
-		this(1.0, knowledge, consequentFactory);
+	public PittsburghMutation(Knowledge knowledge, DataSet train) {
+		this(1.0, knowledge, train);
 	}
 
 	/** Constructor */
-	public PittsburghMutation(double mutationProbability, Knowledge knowledge, ConsequentFactory consequentFactory) {
-		this(mutationProbability, knowledge, consequentFactory,
+	public PittsburghMutation(double mutationProbability, Knowledge knowledge, DataSet train) {
+		this(mutationProbability, knowledge, train,
 			 () -> JMetalRandom.getInstance().nextDouble(),
 			 (a, b) -> JMetalRandom.getInstance().nextInt(a, b));
 	}
 
 	/** Constructor */
-	public PittsburghMutation(double mutationProbability, Knowledge knowledge, ConsequentFactory consequentFactory, RandomGenerator<Double> randomGenerator) {
+	public PittsburghMutation(double mutationProbability, Knowledge knowledge, DataSet train, RandomGenerator<Double> randomGenerator) {
 		this(
-			mutationProbability, knowledge, consequentFactory,
+			mutationProbability, knowledge, train,
 			randomGenerator,
 			BoundedRandomGenerator.fromDoubleToInteger(randomGenerator));
 	}
 
 	/** Constructor */
-	public PittsburghMutation(double mutationProbability, Knowledge knowledge, ConsequentFactory consequentFactory, RandomGenerator<Double> randomGenerator, BoundedRandomGenerator<Integer> intRandomGenerator) {
+	public PittsburghMutation(double mutationProbability, Knowledge knowledge, DataSet train, RandomGenerator<Double> randomGenerator, BoundedRandomGenerator<Integer> intRandomGenerator) {
 		if (mutationProbability < 0) {
 			throw new JMetalException("Mutation probability is negative: " + mutationProbability);
 		}
 		this.mutationProbability = mutationProbability;
 		this.knowledge = knowledge;
-		this.consequentFactory = consequentFactory;
+		this.train = train;
 		this.randomGenerator = randomGenerator;
 		this.intRandomGenerator = intRandomGenerator;
 	}
@@ -72,10 +69,6 @@ public class PittsburghMutation implements MutationOperator<IntegerSolution> {
 		this.knowledge = knowledge;
 	}
 
-	public void setConsequentFactory(ConsequentFactory consequentFactory) {
-		this.consequentFactory = consequentFactory;
-	}
-
 	/** Execute() method
 	 * @param solution IntegerSolution : PittsburghSolutionを前提
 	 */
@@ -89,32 +82,23 @@ public class PittsburghMutation implements MutationOperator<IntegerSolution> {
 	}
 
 	/**
+	 * 後件部の学習をここでは行わない.
 	 * @param probability
 	 * @param solution PittsburghSolution
 	 */
 	public void doMutation(double probability, PittsburghSolution solution) {
-
 		int numberOfRules = solution.getMichiganPopulation().size();
-		int dimension = consequentFactory.getTrain().getNdim();
+		int dimension = train.getNdim();
 
-		ArrayList<IntegerSolution> newMichiganPopulation = new ArrayList<>();
 		for(int rule_i = 0; rule_i < numberOfRules; rule_i++) {
-			MichiganSolution michiganSolution = (MichiganSolution)solution.getMichiganPopulation().get(rule_i);
-			Antecedent antecedent = michiganSolution.getRule().getAntecedent().deepcopy();
-			Consequent consequent = michiganSolution.getRule().getConsequent().deepcopy();
-
-			/* Probability for each rule := 1/NumberOfRules */
-			if(Random.getInstance().getGEN().nextInt(numberOfRules) == 0) {
-				/* Perform muation for rule_i */
-				int[] antecedentIndex = michiganSolution.getRule().getAntecedent().getAntecedentIndex();
-
+			/* Perform muation for rule_i */
+			if(Random.getInstance().getGEN().nextInt(numberOfRules) == 0) {/* Probability for each rule := 1/NumberOfRules */
 				/* Decide which demension is performed mutation. */
 				int mutatedDimension = Random.getInstance().getGEN().nextInt(dimension);
-
 				/* To judge which mutatedDimension is categorical or numerical  */
-				double variableOfRandomPattern = consequentFactory.getTrain().getPattern(Random.getInstance().getGEN().nextInt(consequentFactory.getTrain().getDataSize()))
+				double variableOfRandomPattern = train
+												.getPattern(Random.getInstance().getGEN().nextInt(train.getDataSize()))
 					  							.getDimValue(mutatedDimension);
-
 				/* Attribute is Numeric */
 				if(variableOfRandomPattern >= 0.0) {
 					int numberOfCandidates = knowledge.getFuzzySetNum(mutatedDimension);
@@ -126,28 +110,16 @@ public class PittsburghMutation implements MutationOperator<IntegerSolution> {
 					}
 					/* Perform mutation */
 					int newFuzzySet = list.get( Random.getInstance().getGEN().nextInt(list.size()) );
-					antecedentIndex[mutatedDimension] = newFuzzySet;
+					/* Set variable */
+					solution.setVariable(rule_i*dimension + mutatedDimension, newFuzzySet);
 				}
 				/* Attribute is categorical */
 				else {
-					antecedentIndex[mutatedDimension] = (int)variableOfRandomPattern;
+					solution.setVariable(rule_i*dimension + mutatedDimension, (int)variableOfRandomPattern);
 				}
-
-				antecedent = Antecedent.builder()
-						.antecedentIndex(antecedentIndex)
-						.knowledge(knowledge)
-						.build();
-				consequent = consequentFactory.learning(antecedent);
 			}
-			/* Don't perform mutation for rule_i -> Don't learning */
-			newMichiganPopulation.add(new MichiganSolution(michiganSolution.getBounds(),
-					michiganSolution.getNumberOfObjectives(),
-					michiganSolution.getNumberOfConstraints(),
-					antecedent, consequent) );
 		}
 
-		solution.setMichiganPopulation(newMichiganPopulation);
 	}
-
 
 }
