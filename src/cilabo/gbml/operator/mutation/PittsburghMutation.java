@@ -26,6 +26,11 @@ public class PittsburghMutation implements MutationOperator<IntegerSolution> {
 	private ConsequentFactory consequentFactory;
 
 	/** Constructor */
+	public PittsburghMutation(Knowledge knowledge, ConsequentFactory consequentFactory) {
+		this(1.0, knowledge, consequentFactory);
+	}
+
+	/** Constructor */
 	public PittsburghMutation(double mutationProbability, Knowledge knowledge, ConsequentFactory consequentFactory) {
 		this(mutationProbability, knowledge, consequentFactory,
 			 () -> JMetalRandom.getInstance().nextDouble(),
