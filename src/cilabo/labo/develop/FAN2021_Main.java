@@ -26,9 +26,9 @@ import cilabo.utility.Random;
 /**
  * @version 1.0
  *
- * WCCI2020
+ * FAN2021時点
  */
-public class HybridMoFGBMLwithNSGAII {
+public class FAN2021_Main {
 	public static void main(String[] args) throws JMetalException, FileNotFoundException {
 		String sep = File.separator;
 		String ln = System.lineSeparator();
@@ -37,7 +37,7 @@ public class HybridMoFGBMLwithNSGAII {
 		System.out.println();
 		System.out.println("==== INFORMATION ====");
 		String version = "1.0";
-		System.out.println("main: " + HybridMoFGBMLwithNSGAII.class.getCanonicalName());
+		System.out.println("main: " + FAN2021_Main.class.getCanonicalName());
 		System.out.println("version: " + version);
 		System.out.println();
 		System.out.println("Algorithm: Hybrid-style Multiobjective Fuzzy Genetics-Based Machine Learning");
@@ -91,6 +91,8 @@ public class HybridMoFGBMLwithNSGAII {
 		System.out.println("END: " + end);
 		System.out.println("=====================");
 		/* ********************************************************* */
+
+		System.exit(0);
 	}
 
 	/**

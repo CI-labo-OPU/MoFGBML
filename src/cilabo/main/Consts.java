@@ -102,6 +102,9 @@ public class Consts {
 
 		if(bundle.containsKey("populationSize")) { populationSize = Integer.parseInt(bundle.getString("populationSize")); }
 		if(bundle.containsKey("offspringPopulationSize")) { offspringPopulationSize = Integer.parseInt(bundle.getString("offspringPopulationSize")); }
+		if(bundle.containsKey("terminateGeneration")) { terminateGeneration = Integer.parseInt(bundle.getString("terminateGeneration")); }
+		if(bundle.containsKey("terminateEvaluation")) { terminateEvaluation = Integer.parseInt(bundle.getString("terminateEvaluation")); }
+		if(bundle.containsKey("outputFrequency")) { outputFrequency = Integer.parseInt(bundle.getString("outputFrequency")); }
 
 		if(bundle.containsKey("RAND_SEED")) { RAND_SEED = Integer.parseInt(bundle.getString("RAND_SEED")); }
 		if(bundle.containsKey("WINDOWS")) { WINDOWS = Integer.parseInt(bundle.getString("WINDOWS")); }
