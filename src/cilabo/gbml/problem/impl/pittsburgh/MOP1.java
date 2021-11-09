@@ -84,6 +84,10 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		return this.knowledge;
 	}
 
+	public DataSet getEvaluationDataset() {
+		return this.evaluationDataset;
+	}
+
 	/* Setter */
 	public void setEvaluationDataset(DataSet evaluationDataset) {
 		this.evaluationDataset = evaluationDataset;
