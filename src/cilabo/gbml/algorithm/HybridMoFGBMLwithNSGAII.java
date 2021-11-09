@@ -11,6 +11,7 @@ import org.uma.jmetal.component.densityestimator.impl.CrowdingDistanceDensityEst
 import org.uma.jmetal.component.evaluation.Evaluation;
 import org.uma.jmetal.component.evaluation.impl.SequentialEvaluation;
 import org.uma.jmetal.component.initialsolutioncreation.InitialSolutionsCreation;
+import org.uma.jmetal.component.initialsolutioncreation.impl.RandomSolutionsCreation;
 import org.uma.jmetal.component.ranking.Ranking;
 import org.uma.jmetal.component.ranking.impl.FastNonDominatedSortRanking;
 import org.uma.jmetal.component.replacement.Replacement;
@@ -70,7 +71,6 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 			CrossoverOperator<S> crossoverOperator,
 			MutationOperator<S> mutationOperator,
 			Termination termination,
-			InitialSolutionsCreation<S> initialSolutionsCreation,
 			ConsequentFactory consequentFactory) {
 		/* Constructor Body */
 		this.problem = problem;
@@ -83,7 +83,6 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 		this.crossoverOperator = crossoverOperator;
 		this.mutationOperator = mutationOperator;
 		this.termination = termination;
-		this.initialSolutionsCreation = initialSolutionsCreation;
 
 		/* NSGA-II */
 		DensityEstimator<S> densityEstimator = new CrowdingDistanceDensityEstimator<>();
@@ -105,6 +104,7 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 								Arrays.asList(
 										ranking.getSolutionComparator(), densityEstimator.getSolutionComparator())));
 
+		this.initialSolutionsCreation = new RandomSolutionsCreation<>(problem, populationSize);
 		this.evaluation = new SequentialEvaluation<>();
 
 		this.algorithmStatusData = new HashMap<>();

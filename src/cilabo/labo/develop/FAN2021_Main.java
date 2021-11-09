@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
 
+import org.uma.jmetal.component.termination.Termination;
+import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
@@ -12,6 +14,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
+import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
 import cilabo.gbml.operator.crossover.PittsburghCrossover;
@@ -165,6 +168,21 @@ public class FAN2021_Main {
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
 		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
 
+		/* Termination: Number of total evaluations */
+		Termination termination = new TerminationByEvaluations(Consts.terminateEvaluation);
+
+		/* Algorithm: Hybrid-style MoFGBML with NSGA-II */
+		HybridMoFGBMLwithNSGAII<IntegerSolution> algorithm
+			= new HybridMoFGBMLwithNSGAII<>(problem,
+											Consts.populationSize,
+											Consts.offspringPopulationSize,
+											Consts.outputFrequency,
+											"",	//outputRootDir
+											crossover,
+											mutation,
+											termination,
+											problem.getConsequentFactory()
+											);
 
 
 	}
