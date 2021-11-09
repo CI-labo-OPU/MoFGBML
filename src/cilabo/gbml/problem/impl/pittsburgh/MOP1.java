@@ -17,7 +17,7 @@ import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
 import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3_4_5;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.antecedent.AntecedentFactory;
-import cilabo.fuzzy.rule.antecedent.factory.RandomInitialization;
+import cilabo.fuzzy.rule.antecedent.factory.HeuristicRuleGenerationMethod;
 import cilabo.fuzzy.rule.consequent.Consequent;
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.fuzzy.rule.consequent.factory.MoFGBML_Learning;
@@ -25,6 +25,8 @@ import cilabo.gbml.problem.AbstractPitssburghGBML_Problem;
 import cilabo.gbml.solution.MichiganSolution;
 import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.main.Consts;
+import cilabo.utility.GeneralFunctions;
+import cilabo.utility.Random;
 
 /**
  * The first multi-objective optimization problem definition on MoFGBML.
@@ -42,7 +44,7 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 
 
 	// ************************************
-	public MOP1(int seed, DataSet train) {
+	public MOP1(DataSet train) {
 		this.evaluationDataset = train;
 		setNumberOfVariables(train.getNdim()*Consts.MAX_RULE_NUM);	// 可変だが、最大値で設定
 		setNumberOfObjectives(2);
@@ -55,12 +57,11 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 				.params(params)
 				.build()
 				.create();
-		//TODO Heuristic rule generation methodのAntecedentFactoryに変更
-		AntecedentFactory antecedentFactory = RandomInitialization.builder()
-				.seed(seed)
-				.knowledge(knowledge)
-				.train(train)
-				.build();
+		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
+										.knowledge(knowledge)
+										.train(train)
+										.samplingIndex(new Integer[] {})
+										.build();
 		ConsequentFactory consequentFactory = MoFGBML_Learning.builder()
 				.train(train)
 				.build();
@@ -112,6 +113,10 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		            .collect(Collectors.toList());
 
 		// Rules
+		Integer[] samplingIndex = GeneralFunctions.samplingWithout(evaluationDataset.getDataSize(), //box
+																	Consts.INITIATION_RULE_NUM,	//want
+																	Random.getInstance().getGEN());
+		((HeuristicRuleGenerationMethod)antecedentFactory).setSamplingIndex(samplingIndex);
 		List<IntegerSolution> michiganPopulation = new ArrayList<>();
 		for(int i = 0; i < Consts.INITIATION_RULE_NUM; i++) {
 			Antecedent antecedent = antecedentFactory.create();

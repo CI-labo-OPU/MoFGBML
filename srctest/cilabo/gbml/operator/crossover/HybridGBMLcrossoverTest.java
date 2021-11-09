@@ -31,7 +31,7 @@ public class HybridGBMLcrossoverTest {
 		JMetalRandom.getInstance().setSeed(20);
 
 		//Problem
-		MOP1<IntegerSolution> problem = new MOP1<>(Consts.RAND_SEED, train);
+		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		Classification classification = new SingleWinnerRuleSelection();
 		problem.setClassification(classification);
 
@@ -70,7 +70,7 @@ public class HybridGBMLcrossoverTest {
 		JMetalRandom.getInstance().setSeed(20);
 
 		//Problem
-		MOP1<IntegerSolution> problem = new MOP1<>(Consts.RAND_SEED, train);
+		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		Classification classification = new SingleWinnerRuleSelection();
 		problem.setClassification(classification);
 

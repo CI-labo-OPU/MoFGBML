@@ -149,7 +149,7 @@ public class FAN2021_Main {
 	public static void HybridStyleMoFGBML(DataSet train, DataSet test) {
 
 		/* MOP: Multi-objective Optimization Problem */
-		MOP1<IntegerSolution> problem = new MOP1<>(Consts.RAND_SEED, train);
+		MOP1<IntegerSolution> problem = new MOP1<>(train);
 
 		/* Crossover: Hybrid-style GBML specific crossover operator. */
 		double crossoverProbability = 1.0;

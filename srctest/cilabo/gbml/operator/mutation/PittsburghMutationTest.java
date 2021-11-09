@@ -11,7 +11,6 @@ import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
-import cilabo.main.Consts;
 import cilabo.utility.Input;
 
 public class PittsburghMutationTest {
@@ -26,7 +25,7 @@ public class PittsburghMutationTest {
 		JMetalRandom.getInstance().setSeed(0);
 
 		//Problem
-		MOP1<IntegerSolution> problem = new MOP1<>(Consts.RAND_SEED, train);
+		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		Classification classification = new SingleWinnerRuleSelection();
 		problem.setClassification(classification);
 
