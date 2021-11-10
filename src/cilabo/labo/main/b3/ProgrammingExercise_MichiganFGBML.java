@@ -1,4 +1,4 @@
-package cilabo.labo.main;
+package cilabo.labo.main.b3;
 
 import java.io.File;
 import java.io.FileNotFoundException;
