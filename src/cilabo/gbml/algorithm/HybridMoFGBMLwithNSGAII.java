@@ -114,8 +114,33 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 	@Override
 	public void run() {
 		startTime = System.currentTimeMillis();
+
 		/* === START === */
-		//TODO
+		List<S> offspringPopulation;
+		List<S> matingPopulation;
+
+		/* Step 1. 初期個体群生成 - Initialization Population */
+		population = createInitialPopulation();
+		/* Step 2. 初期個体群評価 - Initial Population Evaluation */
+		population = evaluatePopulation(population);
+		/* JMetal progress initialization */
+		initProgress();
+
+		/* GA loop */
+		while(!isStoppingConditionReached()) {
+			/* 親個体選択 - Mating Selection */
+			matingPopulation = selection(population);
+			/* 子個体群生成 - Offspring Generation */
+			offspringPopulation = reproduction(matingPopulation);
+			/* 子個体群評価 - Offsprign Evaluation */
+			offspringPopulation = evaluatePopulation(offspringPopulation);
+			/* 個体群更新・環境選択 - Environmental Selection */
+			population = replacement(population, offspringPopulation);
+
+			/* JMetal progress update */
+			updateProgress();
+		}
+
 		/* ===  END  === */
 		totalComputingTime = System.currentTimeMillis() - startTime;
 	}
@@ -136,6 +161,13 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 	@Override
 	protected void updateProgress() {
 		//TODO
+		evaluations += offspringPopulationSize;
+	    algorithmStatusData.put("EVALUATIONS", evaluations);
+	    algorithmStatusData.put("POPULATION", population);
+	    algorithmStatusData.put("COMPUTING_TIME", System.currentTimeMillis() - startTime);
+
+	    observable.setChanged();
+	    observable.notifyObservers(algorithmStatusData);
 	}
 
 	@Override

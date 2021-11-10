@@ -18,7 +18,7 @@ import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.consequent.Consequent;
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.fuzzy.rule.consequent.factory.MoFGBML_Learning;
-import cilabo.gbml.problem.impl.ProblemMichiganFGBML;
+import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 import cilabo.gbml.solution.MichiganSolution;
 import cilabo.utility.Input;
 

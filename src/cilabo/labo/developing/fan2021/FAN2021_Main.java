@@ -10,10 +10,12 @@ import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.observer.impl.EvaluationObserver;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
+import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
 import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
@@ -153,6 +155,7 @@ public class FAN2021_Main {
 
 		/* MOP: Multi-objective Optimization Problem */
 		MOP1<IntegerSolution> problem = new MOP1<>(train);
+		problem.setClassification(new SingleWinnerRuleSelection());
 
 		/* Crossover: Hybrid-style GBML specific crossover operator. */
 		double crossoverProbability = 1.0;
@@ -184,9 +187,16 @@ public class FAN2021_Main {
 											problem.getConsequentFactory()
 											);
 
+		/* Running observation */
+		EvaluationObserver evaluationObserver = new EvaluationObserver(Consts.outputFrequency);
+		algorithm.getObservable().register(evaluationObserver);
 
+		/* === GA RUN === */
+		algorithm.run();
+		/* ============== */
+
+		return;
 	}
-
 
 
 

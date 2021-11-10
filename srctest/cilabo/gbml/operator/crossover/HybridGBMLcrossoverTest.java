@@ -12,7 +12,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
-import cilabo.gbml.problem.impl.ProblemMichiganFGBML;
+import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.gbml.solution.util.attribute.ErroredPatternsAttribute;

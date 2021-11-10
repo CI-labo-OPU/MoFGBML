@@ -35,7 +35,7 @@ import cilabo.gbml.component.replacement.SingleObjectiveMaximizeReplacementWitho
 import cilabo.gbml.component.variation.MichiganSolutionVariation;
 import cilabo.gbml.operator.crossover.UniformCrossover;
 import cilabo.gbml.operator.mutation.MichiganMutation;
-import cilabo.gbml.problem.impl.ProblemMichiganFGBML;
+import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 import cilabo.gbml.solution.MichiganSolution;
 import cilabo.main.Consts;
 import cilabo.metric.ErrorRate;

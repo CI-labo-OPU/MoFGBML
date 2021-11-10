@@ -1,13 +1,13 @@
 package org.uma.jmetal.problem.multiobjective;
 
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
+
 import org.uma.jmetal.problem.binaryproblem.impl.AbstractBinaryProblem;
 import org.uma.jmetal.solution.binarysolution.BinarySolution;
 import org.uma.jmetal.solution.binarysolution.impl.DefaultBinarySolution;
 import org.uma.jmetal.util.JMetalException;
-
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.List;
 
 /**
  * Class representing problem OneZeroMax. The problem consist of maximizing the

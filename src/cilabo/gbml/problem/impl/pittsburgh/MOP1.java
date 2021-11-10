@@ -21,6 +21,9 @@ import cilabo.fuzzy.rule.antecedent.factory.HeuristicRuleGenerationMethod;
 import cilabo.fuzzy.rule.consequent.Consequent;
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.fuzzy.rule.consequent.factory.MoFGBML_Learning;
+import cilabo.gbml.objectivefunction.ObjectiveFunction;
+import cilabo.gbml.objectivefunction.impl.ErrorRateForPittsburgh;
+import cilabo.gbml.objectivefunction.impl.NumberOfRules;
 import cilabo.gbml.problem.AbstractPitssburghGBML_Problem;
 import cilabo.gbml.solution.MichiganSolution;
 import cilabo.gbml.solution.PittsburghSolution;
@@ -101,9 +104,10 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	@Override
 	public PittsburghSolution createSolution() {
 		// Boundary
-		List<Integer> lowerBounds = new ArrayList<>(antecedentFactory.create().getDimension());
-		List<Integer> upperBounds = new ArrayList<>(antecedentFactory.create().getDimension());
-		for(int i = 0; i < antecedentFactory.create().getDimension(); i++) {
+		int dimension = evaluationDataset.getNdim();
+		List<Integer> lowerBounds = new ArrayList<>(dimension);
+		List<Integer> upperBounds = new ArrayList<>(dimension);
+		for(int i = 0; i < dimension; i++) {
 			lowerBounds.add(0);
 			upperBounds.add(params.length);
 		}
@@ -136,9 +140,19 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		return solution;
 	}
 
-	//TODO
 	@Override
 	public void evaluate(IntegerSolution solution) {
+		/* The first objective */
+		ObjectiveFunction<PittsburghSolution, Double> function1 = new ErrorRateForPittsburgh(evaluationDataset);
+		double f1 = function1.function((PittsburghSolution)solution);
+		/* The second objective */
+		ObjectiveFunction<PittsburghSolution, Double> function2 = new NumberOfRules();
+		double f2 = function2.function((PittsburghSolution)solution);
 
+		solution.setObjective(0, f1);
+		solution.setObjective(1, f2);
 	}
+
+
 }
+

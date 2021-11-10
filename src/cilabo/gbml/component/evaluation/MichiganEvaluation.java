@@ -8,7 +8,7 @@ import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 
-import cilabo.gbml.problem.impl.ProblemMichiganFGBML;
+import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 
 public class MichiganEvaluation<S extends Solution<?>> extends AbstractEvaluation<S> {
 

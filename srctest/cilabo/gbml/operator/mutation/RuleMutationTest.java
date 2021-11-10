@@ -8,7 +8,7 @@ import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import cilabo.data.DataSet;
 import cilabo.fuzzy.knowledge.Knowledge;
-import cilabo.gbml.problem.impl.ProblemMichiganFGBML;
+import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 import cilabo.utility.Input;
 
 public class RuleMutationTest {

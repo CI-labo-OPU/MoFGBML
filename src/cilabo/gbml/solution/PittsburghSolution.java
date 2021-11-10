@@ -87,6 +87,11 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 	public void setMichiganPopulation(List<IntegerSolution> solutions) {
 		this.michiganPopulation = solutions;
 
+		// Clear this.variables
+		for(int i = 0; i < getNumberOfVariables(); i++) {
+			setVariable(i, 0);
+		}
+
 		// Build classifier from michigan population.
 		classifier = new RuleBasedClassifier();
 		((RuleBasedClassifier)classifier).setClassification(classification);
