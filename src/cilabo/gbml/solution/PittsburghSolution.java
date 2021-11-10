@@ -1,7 +1,9 @@
 package cilabo.gbml.solution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
@@ -10,6 +12,7 @@ import org.uma.jmetal.solution.integersolution.impl.DefaultIntegerSolution;
 import cilabo.fuzzy.classifier.Classifier;
 import cilabo.fuzzy.classifier.RuleBasedClassifier;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
+import cilabo.fuzzy.rule.Rule;
 import cilabo.gbml.solution.util.SortMichiganPopulation;
 
 public class PittsburghSolution extends DefaultIntegerSolution implements IntegerSolution {
@@ -48,31 +51,20 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 		// Radix sort Michigan solution list
 		SortMichiganPopulation.radixSort(michiganPopulation);
 
-		this.michiganPopulation = michiganPopulation;
-
-		// Build classifier from michigan population.
-		classifier = new RuleBasedClassifier();
-		((RuleBasedClassifier)classifier).setClassification(classification);
-		for(int i = 0; i < michiganPopulation.size(); i++) {
-			IntegerSolution michigan = michiganPopulation.get(i);
-			((RuleBasedClassifier)classifier).addRule(((MichiganSolution)michigan).getRule());
-			// Set variable from michigan-type solution.
-			for(int j = 0; j < michigan.getNumberOfVariables(); j++) {
-				setVariable(i*michigan.getNumberOfVariables() + j, michigan.getVariable(j));
-			}
-		}
-
 		this.classification = classification;
+		this.setMichiganPopulation(michiganPopulation);
+
 	}
 
 	/** Copy constructor */
 	public PittsburghSolution(PittsburghSolution solution) {
 		super(solution);
 		michiganPopulation = new ArrayList<>(solution.getMichiganPopulation().size());
-		for(int i = 0; i < michiganPopulation.size(); i++) {
+		for(int i = 0; i < solution.getMichiganPopulation().size(); i++) {
 			michiganPopulation.add(i, (IntegerSolution)solution.getMichiganPopulation().get(i).copy());
 		}
 		classifier = solution.getClassifier().copy();
+		classification = solution.getClassification();
 	}
 
 	// ************************************************************
@@ -85,11 +77,21 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 
 	/* Setters */
 	public void setMichiganPopulation(List<IntegerSolution> solutions) {
-		this.michiganPopulation = solutions;
-
 		// Clear this.variables
 		for(int i = 0; i < getNumberOfVariables(); i++) {
 			setVariable(i, 0);
+		}
+
+		// Eliminate duplicate solutions
+		this.michiganPopulation = new ArrayList<>();
+		Map<String, IntegerSolution> map = new HashMap<>();
+		for(int i = 0; i < solutions.size(); i++) {
+			MichiganSolution michigan = (MichiganSolution)solutions.get(i);
+			Rule rule = michigan.getRule();
+			if(!map.containsKey(rule.toString())) {
+				map.put(rule.toString(), michigan);
+				this.michiganPopulation.add(michigan);
+			}
 		}
 
 		// Build classifier from michigan population.
@@ -116,6 +118,10 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 
 	public Classifier getClassifier() {
 		return this.classifier;
+	}
+
+	public Classification getClassification() {
+		return this.classification;
 	}
 
 }

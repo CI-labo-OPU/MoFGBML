@@ -3,6 +3,7 @@ package cilabo.labo.developing.fan2021;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.List;
 
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
@@ -10,6 +11,8 @@ import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.fileoutput.SolutionListOutput;
+import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetal.util.observer.impl.EvaluationObserver;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
@@ -36,7 +39,6 @@ import cilabo.utility.Random;
 public class FAN2021_Main {
 	public static void main(String[] args) throws JMetalException, FileNotFoundException {
 		String sep = File.separator;
-		String ln = System.lineSeparator();
 
 		/* ********************************************************* */
 		System.out.println();
@@ -53,6 +55,7 @@ public class FAN2021_Main {
 		Consts.set("consts");
 		// make result directory
 		Output.mkdirs(Consts.ROOTFOLDER);
+
 		// set command arguments to static variables
 		CommandLineArgs.loadArgs(CommandLineArgs.class.getCanonicalName(), args);
 		// Output constant parameters
@@ -152,7 +155,6 @@ public class FAN2021_Main {
 	 *
 	 */
 	public static void HybridStyleMoFGBML(DataSet train, DataSet test) {
-
 		/* MOP: Multi-objective Optimization Problem */
 		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		problem.setClassification(new SingleWinnerRuleSelection());
@@ -180,7 +182,7 @@ public class FAN2021_Main {
 											Consts.populationSize,
 											Consts.offspringPopulationSize,
 											Consts.outputFrequency,
-											"",	//outputRootDir
+											Consts.EXPERIMENT_ID_DIR,
 											crossover,
 											mutation,
 											termination,
@@ -194,6 +196,13 @@ public class FAN2021_Main {
 		/* === GA RUN === */
 		algorithm.run();
 		/* ============== */
+
+		/* Non-dominated solutions in final generation */
+		List<IntegerSolution> nonDominatedSolutions = algorithm.getResult();
+	    new SolutionListOutput(nonDominatedSolutions)
+        	.setVarFileOutputContext(new DefaultFileOutputContext("VAR.csv", ","))
+        	.setFunFileOutputContext(new DefaultFileOutputContext("FUN.csv", ","))
+        	.print();
 
 		return;
 	}

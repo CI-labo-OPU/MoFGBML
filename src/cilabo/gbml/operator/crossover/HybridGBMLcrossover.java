@@ -11,6 +11,8 @@ import org.uma.jmetal.util.pseudorandom.BoundedRandomGenerator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import org.uma.jmetal.util.pseudorandom.RandomGenerator;
 
+import cilabo.gbml.solution.util.EqualsSolution;
+
 public class HybridGBMLcrossover implements CrossoverOperator<IntegerSolution> {
 
 	private double crossoverProbability;
@@ -90,7 +92,7 @@ public class HybridGBMLcrossover implements CrossoverOperator<IntegerSolution> {
 		if(crossoverRandomGenerator.getRandomValue() < probability) {/* Do crossover */
 			/* Judge if two parents are same. */
 			double p = michiganOperationProbability;
-			if(parent1.toString().equals(parent2.toString())) p = 1.0;
+			if(EqualsSolution.equals(parent1, parent2)) p = 1.0;
 			else p = michiganOperationProbability;
 
 			if(crossoverRandomGenerator.getRandomValue() < p) {

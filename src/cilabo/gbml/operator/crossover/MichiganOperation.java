@@ -118,6 +118,7 @@ public class MichiganOperation implements CrossoverOperator<IntegerSolution> {
 	public List<IntegerSolution> doCrossover(double probability, IntegerSolution _parent) {
 		// Cast IntegerSolution to PittsburghSolution
 		PittsburghSolution parent = (PittsburghSolution)_parent;
+		DataSet train = consequentFactory.getTrain();
 
 		List<IntegerSolution> generatedMichiganSolution = new ArrayList<>();
 
@@ -136,78 +137,88 @@ public class MichiganOperation implements CrossoverOperator<IntegerSolution> {
 		}
 
 		/* Step 3. Heuristic Rule Generation */
-		@SuppressWarnings("unchecked")
-		List<Integer> erroredPatterns = (List<Integer>)parent.getAttribute((new ErroredPatternsAttribute<IntegerSolution>()).getAttributeId());
-		DataSet train = consequentFactory.getTrain();
-		//誤識別パターンが足りないor無い場合は，ランダムなパターンをリストに追加
-		int NumberOfLack = numberOfHeuristic - erroredPatterns.size();
-		for(int i = 0; i < NumberOfLack; i++) {
-			int id = train.getPattern(Random.getInstance().getGEN()
+		if(numberOfHeuristic > 0) {
+			@SuppressWarnings("unchecked")
+			List<Integer> erroredPatterns = (List<Integer>)parent.getAttribute((new ErroredPatternsAttribute<IntegerSolution>()).getAttributeId());
+			//誤識別パターンが足りないor無い場合は，ランダムなパターンをリストに追加
+			int NumberOfLack = numberOfHeuristic - erroredPatterns.size();
+			for(int i = 0; i < NumberOfLack; i++) {
+				int id = train.getPattern(Random.getInstance().getGEN()
 						.nextInt(train.getDataSize()))
-					.getID();
-			erroredPatterns.add(id);
-		}
-		//Sampling patterns without replacement from erroredPatterns.
-		Integer[] erroredPatternsIdx = GeneralFunctions.samplingWithout(erroredPatterns.size(),
-																		numberOfHeuristic,
-																		Random.getInstance().getGEN());
-		for(int i = 0; i < erroredPatternsIdx.length; i++) {
-			Pattern pattern = train.getPatternWithID(erroredPatterns.get(erroredPatternsIdx[i]));
-			Antecedent generatedAntecedent = heuristicRuleGeneration.heuristicRuleGeneration(pattern);
-			MichiganSolution michiganSolution = (MichiganSolution)parent.getMichiganPopulation().get(0).copy();
-
-			for(int n = 0; n < generatedAntecedent.getDimension(); n++) {
-				michiganSolution.setVariable(n, generatedAntecedent.getAntecedentIndexAt(n));
+						.getID();
+				erroredPatterns.add(id);
 			}
+			//Sampling patterns without replacement from erroredPatterns.
+			Integer[] erroredPatternsIdx = GeneralFunctions.samplingWithout(erroredPatterns.size(),
+					numberOfHeuristic,
+					Random.getInstance().getGEN());
+			for(int i = 0; i < erroredPatternsIdx.length; i++) {
+				Pattern pattern = train.getPatternWithID(erroredPatterns.get(erroredPatternsIdx[i]));
+				Antecedent generatedAntecedent = heuristicRuleGeneration.heuristicRuleGeneration(pattern);
+				MichiganSolution michiganSolution = (MichiganSolution)parent.getMichiganPopulation().get(0).copy();
 
-			generatedMichiganSolution.add(michiganSolution);
+				for(int n = 0; n < generatedAntecedent.getDimension(); n++) {
+					michiganSolution.setVariable(n, generatedAntecedent.getAntecedentIndexAt(n));
+				}
+
+				generatedMichiganSolution.add(michiganSolution);
+			}
 		}
 
 		/* Step 4. Rule Generation by Genetic Algorithm - Michigan-style GA */
 		int NumberOfGA = numberOfGeneratingRules - numberOfHeuristic;
-		/* Crossover: Uniform crossover */
-		CrossoverOperator<IntegerSolution> crossover = new UniformCrossover(Consts.MICHIGAN_CROSS_RT);
-		/* Mutation: Michigan-style specific mutation operation */
-		double mutationProbability = 1.0 / (double)train.getNdim();
-		MutationOperator<IntegerSolution> mutation = new MichiganMutation(mutationProbability,
-																		  heuristicRuleGeneration.getKnowledge(),
-																		  train);
-		/* Mating Selection: Binray tournament */
-		int tournamentSize = 2;
-		int matingPoolSize = NumberOfGA *
-							crossover.getNumberOfRequiredParents() / crossover.getNumberOfGeneratedChildren();
-		MatingPoolSelection<IntegerSolution> selection = new NaryTournamentMatingPoolSelection<>(
-														tournamentSize,
-														matingPoolSize,
-														new ObjectiveComparator<>(0, ObjectiveComparator.Ordering.DESCENDING));
-		/* == GA START == */
-		/* Mating Selection */
-		List<IntegerSolution> matingPopulation = selection.select(parent.getMichiganPopulation());
-		/* Offspring Generation */
-		List<IntegerSolution> generatedSolutionByGA = new ArrayList<>();
-		int numberOfParents = crossover.getNumberOfRequiredParents();
-		for(int i = 0; i < matingPoolSize; i+= numberOfParents) {
-			List<IntegerSolution> parents = new ArrayList<>();
-			for(int j = 0; j < numberOfParents; j++) {
-				parents.add(matingPopulation.get(i + j));
-			}
+		if(NumberOfGA > 0) {
+
 			/* Crossover: Uniform crossover */
-			List<IntegerSolution> offspring = crossover.execute(parents);
-			/* Mutation */
-			for(IntegerSolution s : offspring) {
-				mutation.execute(s);
-				generatedSolutionByGA.add(s);
-				if(generatedSolutionByGA.size() == NumberOfGA) {
-					break;
+			CrossoverOperator<IntegerSolution> crossover = new UniformCrossover(Consts.MICHIGAN_CROSS_RT);
+			/* Mutation: Michigan-style specific mutation operation */
+			double mutationProbability = 1.0 / (double)train.getNdim();
+			MutationOperator<IntegerSolution> mutation = new MichiganMutation(mutationProbability,
+					heuristicRuleGeneration.getKnowledge(),
+					train);
+			/* Mating Selection: Binray tournament */
+			int tournamentSize = 2;
+			if(parent.getMichiganPopulation().size() == 1) {
+				/* If number of rules for parent is 1, then tournamentSize will be set 1.
+				 * This is regards as that crossover operation is not performed. */
+				tournamentSize = 1;
+			}
+			int matingPoolSize = NumberOfGA *
+					crossover.getNumberOfRequiredParents() / crossover.getNumberOfGeneratedChildren();
+			MatingPoolSelection<IntegerSolution> selection = new NaryTournamentMatingPoolSelection<>(
+					tournamentSize,
+					matingPoolSize,
+					new ObjectiveComparator<>(0, ObjectiveComparator.Ordering.DESCENDING));
+			/* == GA START == */
+			/* Mating Selection */
+			List<IntegerSolution> matingPopulation = selection.select(parent.getMichiganPopulation());
+			/* Offspring Generation */
+			List<IntegerSolution> generatedSolutionByGA = new ArrayList<>();
+			int numberOfParents = crossover.getNumberOfRequiredParents();
+			for(int i = 0; i < matingPoolSize; i+= numberOfParents) {
+				List<IntegerSolution> parents = new ArrayList<>();
+				for(int j = 0; j < numberOfParents; j++) {
+					parents.add(matingPopulation.get(i + j));
+				}
+				/* Crossover: Uniform crossover */
+				List<IntegerSolution> offspring = crossover.execute(parents);
+				/* Mutation */
+				for(IntegerSolution s : offspring) {
+					mutation.execute(s);
+					generatedSolutionByGA.add(s);
+					if(generatedSolutionByGA.size() == NumberOfGA) {
+						break;
+					}
 				}
 			}
+			/* == GA END == */
+
+			// Merge rules (generated by Heuristic) and rules (generated by GA)
+			generatedMichiganSolution.addAll(generatedSolutionByGA);
 		}
-		/* == GA END == */
 
 		/* Replacement: Single objective maximization repelacement */
 		Replacement<IntegerSolution> replacement = new RuleAdditionStyleReplacement();
-		// Merge rules (generated by Heuristic) and rules (generated by GA)
-		generatedMichiganSolution.addAll(generatedSolutionByGA);
 		List<IntegerSolution> currentList = new ArrayList<>();
 		//Deep copy
 		for(int i = 0; i < parent.getMichiganPopulation().size(); i++) {

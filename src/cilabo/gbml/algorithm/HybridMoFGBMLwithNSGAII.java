@@ -1,5 +1,6 @@
 package cilabo.gbml.algorithm;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +26,17 @@ import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.operator.selection.SelectionOperator;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.SolutionListUtils;
 import org.uma.jmetal.util.comparator.MultiComparator;
+import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetal.util.observable.Observable;
 import org.uma.jmetal.util.observable.ObservableEntity;
 import org.uma.jmetal.util.observable.impl.DefaultObservable;
 
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.gbml.component.variation.CrossoverAndMutationAndPittsburghLearningVariation;
+import cilabo.util.fileoutput.PittsburghSolutionListOutput;
 
 public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvolutionaryAlgorithm<S, List<S>>
 										implements ObservableEntity {
@@ -160,7 +164,6 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 
 	@Override
 	protected void updateProgress() {
-		//TODO
 		evaluations += offspringPopulationSize;
 	    algorithmStatusData.put("EVALUATIONS", evaluations);
 	    algorithmStatusData.put("POPULATION", population);
@@ -168,6 +171,20 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 
 	    observable.setChanged();
 	    observable.notifyObservers(algorithmStatusData);
+
+	    String sep = File.separator;
+	    Integer evaluations = (Integer)algorithmStatusData.get("EVALUATIONS");
+	    if(evaluations != null) {
+	    	if(evaluations % frequency == 0) {
+	    		String path = outputRootDir+sep+ "solutions-"+evaluations+".txt";
+	    		new PittsburghSolutionListOutput(getPopulation())
+	    			.printSolutionsToFile(new DefaultFileOutputContext(path), getPopulation());;
+	    	}
+	    }
+		else {
+			JMetalLogger.logger.warning(getClass().getName()
+			+ ": The algorithm has not registered yet any info related to the EVALUATIONS key");
+		}
 	}
 
 	@Override

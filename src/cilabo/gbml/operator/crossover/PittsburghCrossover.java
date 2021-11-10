@@ -105,11 +105,51 @@ public class PittsburghCrossover implements CrossoverOperator<IntegerSolution> {
 			if((N1+N2) > Consts.MAX_RULE_NUM) {
 				int delNum = (N1+N2) - Consts.MAX_RULE_NUM;
 				for(int i = 0; i < delNum; i++) {
-					if(selectRandomGenerator.getRandomValue(0, 1) == 0) {
+					if( N1 > 0 && N2 > 0){
+						if(selectRandomGenerator.getRandomValue(0, 1) == 0) {
+							N1--;
+						}
+						else {
+							N2--;
+						}
+					}
+					else if(N1 == 0 && N2 > 0) {
+						N2--;
+					}
+					else if(N1 > 0 && N2 == 0) {
 						N1--;
 					}
 					else {
-						N2--;
+						break;
+					}
+				}
+			}
+
+			//
+			if((N1+N2) < Consts.MIN_RULE_NUM) {
+				int lackNum = Consts.MIN_RULE_NUM - (N1+N2);
+				for(int i = 0; i < lackNum; i++) {
+
+					if( N1 < parent1.getMichiganPopulation().size() &&
+						N2 < parent2.getMichiganPopulation().size())
+					{
+						if(selectRandomGenerator.getRandomValue(0, 1) == 0) {
+							N1++;
+						}
+						else {
+							N2++;
+						}
+					}
+					else if(N1 >= parent1.getMichiganPopulation().size() &&
+							N2 < parent2.getMichiganPopulation().size()) {
+						N2++;
+					}
+					else if(N1 < parent1.getMichiganPopulation().size() &&
+							N2 >= parent2.getMichiganPopulation().size()) {
+						N1++;
+					}
+					else {
+						break;
 					}
 				}
 			}
@@ -142,8 +182,8 @@ public class PittsburghCrossover implements CrossoverOperator<IntegerSolution> {
 		}
 		/* Don't crossover */
 		else {
-			offspring.add((IntegerSolution)parent1.copy());
-			offspring.add((IntegerSolution)parent2.copy());
+			offspring.add(parent1.copy());
+			offspring.add(parent2.copy());
 			int index = selectRandomGenerator.getRandomValue(0,  1);
 			offspring.remove(index);
 		}

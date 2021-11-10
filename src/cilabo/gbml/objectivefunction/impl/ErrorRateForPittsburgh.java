@@ -71,6 +71,7 @@ public class ErrorRateForPittsburgh implements ObjectiveFunction<PittsburghSolut
 			if(winnerRule.getClass() == RejectedRule.class) {
 				/* Add errored pattern Attribute */
 				addErroredPattern(solution, pattern.getID());
+				numberOfErrorPatterns += 1.0;
 				continue;
 			}
 
