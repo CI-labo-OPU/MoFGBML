@@ -2,6 +2,7 @@ package cilabo.labo.developing.fan2021;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
+import cilabo.fuzzy.classifier.Classifier;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
 import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
@@ -25,7 +27,10 @@ import cilabo.gbml.operator.crossover.MichiganOperation;
 import cilabo.gbml.operator.crossover.PittsburghCrossover;
 import cilabo.gbml.operator.mutation.PittsburghMutation;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
+import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.main.Consts;
+import cilabo.metric.ErrorRate;
+import cilabo.metric.Metric;
 import cilabo.utility.Input;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
@@ -155,6 +160,8 @@ public class FAN2021_Main {
 	 *
 	 */
 	public static void HybridStyleMoFGBML(DataSet train, DataSet test) {
+		String sep = File.separator;
+
 		/* MOP: Multi-objective Optimization Problem */
 		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		problem.setClassification(new SingleWinnerRuleSelection());
@@ -200,9 +207,27 @@ public class FAN2021_Main {
 		/* Non-dominated solutions in final generation */
 		List<IntegerSolution> nonDominatedSolutions = algorithm.getResult();
 	    new SolutionListOutput(nonDominatedSolutions)
-        	.setVarFileOutputContext(new DefaultFileOutputContext("VAR.csv", ","))
-        	.setFunFileOutputContext(new DefaultFileOutputContext("FUN.csv", ","))
+        	.setVarFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"VAR.csv", ","))
+        	.setFunFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"FUN.csv", ","))
         	.print();
+
+	    // Test data
+	    ArrayList<String> strs = new ArrayList<>();
+	    String str = "pop,test";
+	    strs.add(str);
+
+	    Metric metric = new ErrorRate();
+	    for(int i = 0; i < nonDominatedSolutions.size(); i++) {
+	    	IntegerSolution solution = nonDominatedSolutions.get(i);
+	    	Classifier classifier = ((PittsburghSolution)solution).getClassifier();
+	    	double errorRate = (double)metric.metric(classifier, test);
+
+	    	str = String.valueOf(i);
+	    	str += "," + errorRate;
+	    	strs.add(str);
+	    }
+	    String fileName = Consts.EXPERIMENT_ID_DIR + sep + "results.csv";
+	    Output.writeln(fileName, strs, false);
 
 		return;
 	}
