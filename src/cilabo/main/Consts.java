@@ -66,7 +66,6 @@ public class Consts {
 	/** 現世代数表示する世代間隔 */
 	public static int PER_SHOW_GENERATION_DETAIL = 10;
 
-
 	//Index ************************************
 	/** 学習用データ */
 	public static int TRAIN = 0;
