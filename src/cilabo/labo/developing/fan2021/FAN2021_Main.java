@@ -31,7 +31,6 @@ import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.main.Consts;
 import cilabo.metric.ErrorRate;
 import cilabo.metric.Metric;
-import cilabo.utility.Input;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
 import cilabo.utility.Random;
@@ -86,13 +85,12 @@ public class FAN2021_Main {
 		System.out.println("START: " + start);
 
 		/* Random Number ======================= */
-		Consts.RAND_SEED = 2020;
 		Random.getInstance().initRandom(Consts.RAND_SEED);
 		JMetalRandom.getInstance().setSeed(Consts.RAND_SEED);
 
 		/* Load Dataset ======================== */
-		TrainTestDatasetManager datasetManager = loadIrisTrial00();
-//		TrainTestDatasetManager datasetManager = loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
+		TrainTestDatasetManager datasetManager = new TrainTestDatasetManager();
+		datasetManager.loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
 
 		/* Run MoFGBML algorithm =============== */
 		DataSet train = datasetManager.getTrains().get(0);
@@ -106,54 +104,6 @@ public class FAN2021_Main {
 		/* ********************************************************* */
 
 		System.exit(0);
-	}
-
-	/**
-	 * ファイル名を指定してデータセットをロードする関数
-	 * @param trainFile String
-	 * @param testFile String
-	 * @return DatasetManager
-	 */
-	public static TrainTestDatasetManager loadTrainTestFiles(String trainFile, String testFile) {
-		TrainTestDatasetManager manager = new TrainTestDatasetManager();
-
-		DataSet train = new DataSet();
-		Input.inputSingleLabelDataSet(train, trainFile);
-		manager.addTrains(train);
-
-		DataSet test = new DataSet();
-		Input.inputSingleLabelDataSet(test, testFile);
-		manager.addTests(test);
-
-		return manager;
-	}
-
-	/**
-	 * irisのtrial00をロードする関数.
-	 * @return DatasetManager
-	 */
-	public static TrainTestDatasetManager loadIrisTrial00() {
-		TrainTestDatasetManager manager = new TrainTestDatasetManager();
-		String sep = File.separator;
-		String fileName;
-
-		// Training dataset
-		fileName = Consts.DATASET;
-		fileName += sep + CommandLineArgs.dataName;
-		fileName += sep + "a0_0_" + CommandLineArgs.dataName + "-10tra.dat";
-		DataSet train = new DataSet();
-		Input.inputSingleLabelDataSet(train, fileName);
-		manager.addTrains(train);
-
-		// Test dataset
-		fileName = Consts.DATASET;
-		fileName += sep + CommandLineArgs.dataName;
-		fileName += sep + "a0_0_" + CommandLineArgs.dataName + "-10tst.dat";
-		DataSet test = new DataSet();
-		Input.inputSingleLabelDataSet(test, fileName);
-		manager.addTests(test);
-
-		return manager;
 	}
 
 	/**
