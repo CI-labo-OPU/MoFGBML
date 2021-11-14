@@ -86,13 +86,12 @@ public class FAN2021_Main {
 		System.out.println("START: " + start);
 
 		/* Random Number ======================= */
-		Consts.RAND_SEED = 2020;
 		Random.getInstance().initRandom(Consts.RAND_SEED);
 		JMetalRandom.getInstance().setSeed(Consts.RAND_SEED);
 
 		/* Load Dataset ======================== */
-		TrainTestDatasetManager datasetManager = loadIrisTrial00();
-//		TrainTestDatasetManager datasetManager = loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
+//		TrainTestDatasetManager datasetManager = loadIrisTrial00();
+		TrainTestDatasetManager datasetManager = loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
 
 		/* Run MoFGBML algorithm =============== */
 		DataSet train = datasetManager.getTrains().get(0);
