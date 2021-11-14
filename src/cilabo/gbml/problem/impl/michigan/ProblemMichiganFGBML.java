@@ -1,4 +1,4 @@
-package cilabo.gbml.problem.impl;
+package cilabo.gbml.problem.impl.michigan;
 
 import java.util.ArrayList;
 import java.util.HashMap;

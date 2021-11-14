@@ -8,13 +8,13 @@ import cilabo.data.DatasetManager;
 /**
  * 学習用データ1つ，評価用データ1つのシンプルなデータ分割を保持するクラス.
  */
-public class SimpleDatasetManager implements DatasetManager {
+public class TrainTestDatasetManager implements DatasetManager {
 	// ************************************************************
 	ArrayList<DataSet> trains = new ArrayList<>();
 	ArrayList<DataSet> tests = new ArrayList<>();
 
 	// ************************************************************
-	public SimpleDatasetManager() {
+	public TrainTestDatasetManager() {
 	}
 
 	// ************************************************************

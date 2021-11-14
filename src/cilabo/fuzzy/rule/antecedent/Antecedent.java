@@ -91,6 +91,13 @@ public class Antecedent {
 
 	/**
 	 *
+	 */
+	public int[] getAntecedentIndex() {
+		return this.antecedentIndex;
+	}
+
+	/**
+	 *
 	 * @param index
 	 * @return
 	 */

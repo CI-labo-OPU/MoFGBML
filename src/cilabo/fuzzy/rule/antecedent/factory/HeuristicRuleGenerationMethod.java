@@ -1,18 +1,18 @@
 package cilabo.fuzzy.rule.antecedent.factory;
 
+import java.util.Arrays;
+
 import cilabo.data.DataSet;
 import cilabo.data.Pattern;
 import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.antecedent.AntecedentFactory;
 import cilabo.main.Consts;
-import random.MersenneTwisterFast;
+import cilabo.utility.Random;
 
 public class HeuristicRuleGenerationMethod implements AntecedentFactory {
 	// ************************************************************
 	// Fields
-
-	MersenneTwisterFast uniqueRnd;
 
 	/**  */
 	Knowledge knowledge;
@@ -28,8 +28,7 @@ public class HeuristicRuleGenerationMethod implements AntecedentFactory {
 
 	// ************************************************************
 	// Constructor
-	public HeuristicRuleGenerationMethod(int seed, Knowledge knowledge, DataSet train, Integer[] samplingIndex) {
-		this.uniqueRnd = new MersenneTwisterFast(seed);
+	public HeuristicRuleGenerationMethod(Knowledge knowledge, DataSet train, Integer[] samplingIndex) {
 		this.knowledge = knowledge;
 		this.train = train;
 		this.samplingIndex = samplingIndex;
@@ -62,7 +61,7 @@ public class HeuristicRuleGenerationMethod implements AntecedentFactory {
 		int[] antecedentIndex = new int[dimension];
 		for(int n = 0; n < dimension; n++) {
 			// don't care
-			if(uniqueRnd.nextDouble() < dcRate) {
+			if(Random.getInstance().getGEN().nextDouble() < dcRate) {
 				antecedentIndex[n] = 0;
 				continue;
 			}
@@ -83,7 +82,7 @@ public class HeuristicRuleGenerationMethod implements AntecedentFactory {
 				membershipValueRoulette[h] = sumMembershipValue;
 			}
 
-			double arrow = uniqueRnd.nextDouble() * sumMembershipValue;
+			double arrow = Random.getInstance().getGEN().nextDouble() * sumMembershipValue;
 			for(int h = 0; h < fuzzySetNum; h++) {
 				if(arrow < membershipValueRoulette[h]) {
 					antecedentIndex[n] = h+1;
@@ -103,23 +102,22 @@ public class HeuristicRuleGenerationMethod implements AntecedentFactory {
 		return this.knowledge;
 	}
 
+	public void setSamplingIndex(Integer[] samplingIndex) {
+		this.samplingIndex = Arrays.copyOf(samplingIndex, samplingIndex.length);
+		this.head = 0;
+	}
+
 
 	public static HeuristicRuleGenerationMethod.HeuristicRuleGenerationMethodBuilder builder() {
 		return new HeuristicRuleGenerationMethodBuilder();
 	}
 
 	public static class HeuristicRuleGenerationMethodBuilder {
-		private int seed = -1;
 		private Knowledge knowledge;
 		private DataSet train;
 		private Integer[] samplingIndex;
 
 		HeuristicRuleGenerationMethodBuilder() {}
-
-		public HeuristicRuleGenerationMethod.HeuristicRuleGenerationMethodBuilder seed(int seed) {
-			this.seed = seed;
-			return this;
-		}
 
 		public HeuristicRuleGenerationMethod.HeuristicRuleGenerationMethodBuilder knowledge(Knowledge knowledge){
 			this.knowledge = knowledge;
@@ -143,7 +141,7 @@ public class HeuristicRuleGenerationMethod implements AntecedentFactory {
 		 * @param samplingIndex : Integer[]
 		 */
 		public HeuristicRuleGenerationMethod build() {
-			return new HeuristicRuleGenerationMethod(seed, knowledge, train, samplingIndex);
+			return new HeuristicRuleGenerationMethod(knowledge, train, samplingIndex);
 		}
 	}
 }

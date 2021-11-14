@@ -36,6 +36,18 @@ public class MichiganSolution extends DefaultIntegerSolution implements IntegerS
 						.build();
 	}
 
+	public MichiganSolution(List<Pair<Integer, Integer>> bounds,
+							int numberOfObjectives,
+							int numberOfConstraints,
+							Rule rule) {
+		super(bounds, numberOfObjectives, numberOfConstraints);
+		// antecedent to variables
+		for(int i = 0; i < rule.getAntecedent().getDimension(); i++) {
+			this.setVariable(i, rule.getAntecedent().getAntecedentIndexAt(i));
+		}
+		this.rule = rule;
+	}
+
 	public MichiganSolution(MichiganSolution solution) {
 		super(solution);
 		this.rule = solution.getRule().deepcopy();
@@ -88,6 +100,10 @@ public class MichiganSolution extends DefaultIntegerSolution implements IntegerS
 	 */
 	public Rule getRule() {
 		return this.rule;
+	}
+
+	public List<Pair<Integer, Integer>> getBounds() {
+		return this.bounds;
 	}
 
 	/**

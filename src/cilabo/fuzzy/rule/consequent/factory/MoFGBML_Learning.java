@@ -27,6 +27,11 @@ public class MoFGBML_Learning implements ConsequentFactory {
 	// ************************************************************
 	// Methods
 
+	@Override
+	public DataSet getTrain() {
+		return this.train;
+	}
+
 	/**
 	 *
 	 */
