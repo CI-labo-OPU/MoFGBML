@@ -1,9 +1,13 @@
 package cilabo.data.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cilabo.data.DataSet;
 import cilabo.data.DatasetManager;
+import cilabo.labo.developing.fan2021.CommandLineArgs;
+import cilabo.main.Consts;
+import cilabo.utility.Input;
 
 /**
  * 学習用データ1つ，評価用データ1つのシンプルなデータ分割を保持するクラス.
@@ -32,6 +36,54 @@ public class TrainTestDatasetManager implements DatasetManager {
 
 	public ArrayList<DataSet> getTests() {
 		return this.tests;
+	}
+
+	/**
+	 * ファイル名を指定してデータセットをロードする関数
+	 * @param trainFile String
+	 * @param testFile String
+	 * @return DatasetManager
+	 */
+	public TrainTestDatasetManager loadTrainTestFiles(String trainFile, String testFile) {
+		TrainTestDatasetManager manager = new TrainTestDatasetManager();
+
+		DataSet train = new DataSet();
+		Input.inputSingleLabelDataSet(train, trainFile);
+		manager.addTrains(train);
+
+		DataSet test = new DataSet();
+		Input.inputSingleLabelDataSet(test, testFile);
+		manager.addTests(test);
+
+		return manager;
+	}
+
+	/**
+	 * irisのtrial00をロードする関数.
+	 * @return DatasetManager
+	 */
+	public TrainTestDatasetManager loadIrisTrial00() {
+		TrainTestDatasetManager manager = new TrainTestDatasetManager();
+		String sep = File.separator;
+		String fileName;
+
+		// Training dataset
+		fileName = Consts.DATASET;
+		fileName += sep + CommandLineArgs.dataName;
+		fileName += sep + "a0_0_" + CommandLineArgs.dataName + "-10tra.dat";
+		DataSet train = new DataSet();
+		Input.inputSingleLabelDataSet(train, fileName);
+		manager.addTrains(train);
+
+		// Test dataset
+		fileName = Consts.DATASET;
+		fileName += sep + CommandLineArgs.dataName;
+		fileName += sep + "a0_0_" + CommandLineArgs.dataName + "-10tst.dat";
+		DataSet test = new DataSet();
+		Input.inputSingleLabelDataSet(test, fileName);
+		manager.addTests(test);
+
+		return manager;
 	}
 
 }
