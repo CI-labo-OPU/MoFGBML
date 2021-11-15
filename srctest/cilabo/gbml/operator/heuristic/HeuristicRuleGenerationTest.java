@@ -36,7 +36,7 @@ public class HeuristicRuleGenerationTest {
 		for(int i = 0; i < num; i++) {
 
 			Antecedent antecedent = generator.heuristicRuleGeneration(train.getPattern(i));
-			System.out.println(antecedent);
+//			System.out.println(antecedent);
 		}
 
 

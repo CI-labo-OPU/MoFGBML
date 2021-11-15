@@ -32,13 +32,13 @@ public class PittsburghMutationTest {
 		// Solution
 		IntegerSolution solution = problem.createSolution();
 		String beforeString = solution.toString();
-		System.out.println(beforeString);
+//		System.out.println(beforeString);
 
 		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
 		mutation.execute(solution);
 
 		String afterString = solution.toString();
-		System.out.println(afterString);
+//		System.out.println(afterString);
 	}
 
 }

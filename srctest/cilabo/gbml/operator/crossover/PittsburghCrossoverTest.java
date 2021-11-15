@@ -41,6 +41,6 @@ public class PittsburghCrossoverTest {
 		double probability = 1.0;
 		PittsburghCrossover crossover = new PittsburghCrossover(probability);
 		List<IntegerSolution> offspring = crossover.execute(solutions);
-		System.out.println(offspring);
+//		System.out.println(offspring);
 	}
 }
