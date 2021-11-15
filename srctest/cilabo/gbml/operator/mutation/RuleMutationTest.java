@@ -8,7 +8,7 @@ import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import cilabo.data.DataSet;
 import cilabo.fuzzy.knowledge.Knowledge;
-import cilabo.gbml.problem.impl.ProblemMichiganFGBML;
+import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 import cilabo.utility.Input;
 
 public class RuleMutationTest {
@@ -28,15 +28,15 @@ public class RuleMutationTest {
 
 		// Solution
 		IntegerSolution solution = problem.createSolution();
-		System.out.println("[original]");
-		System.out.println(solution.toString());
+//		System.out.println("[original]");
+//		System.out.println(solution.toString());
 
 		// Operator
 		double mutationProbability = 1.0 / (double)train.getDataSize();
 		mutationProbability = 1.0;
 		MichiganMutation mutation = new MichiganMutation(mutationProbability, knowledge, train);
 		mutation.execute(solution);
-		System.out.println("[new solution]");
-		System.out.println(solution.toString());
+//		System.out.println("[new solution]");
+//		System.out.println(solution.toString());
 	}
 }

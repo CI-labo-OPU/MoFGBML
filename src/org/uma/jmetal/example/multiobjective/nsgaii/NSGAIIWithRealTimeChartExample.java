@@ -1,5 +1,7 @@
 package org.uma.jmetal.example.multiobjective.nsgaii;
 
+import java.io.FileNotFoundException;
+
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
@@ -14,8 +16,6 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.observer.impl.EvaluationObserver;
 import org.uma.jmetal.util.observer.impl.RunTimeChartObserver;
-
-import java.io.FileNotFoundException;
 
 /**
  * Class to configure and run the NSGA-II algorithm. A chart showing the front at the end of each

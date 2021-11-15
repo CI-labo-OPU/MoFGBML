@@ -61,6 +61,10 @@ public class MichiganMutation implements MutationOperator<IntegerSolution> {
 		  this.knowledge = knowledge;
 	  }
 
+	  public void setData(DataSet data) {
+		  this.data = data;
+	  }
+
 	  /** Execute() method */
 	  @Override
 	  public IntegerSolution execute(IntegerSolution solution) {
