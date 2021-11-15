@@ -21,7 +21,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>cilabo.main.Main</mainClass>
+              <mainClass>cilabo.labo.developing.fan2021.FAN2021_Main</mainClass>
               <addClasspath>true</addClasspath>
               <addExtensions>true</addExtensions>
               <packageName>main</packageName>
