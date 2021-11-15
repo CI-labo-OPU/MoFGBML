@@ -55,8 +55,8 @@ public class HybridGBMLcrossoverTest {
 				 											problem.getConsequentFactory());
 		String doCrossover = michiganX.doCrossover(1.0, parent).get(0).toString();
 
-		System.out.println("doCrossover");
-		System.out.println(doCrossover);
+//		System.out.println("doCrossover");
+//		System.out.println(doCrossover);
 	}
 
 	@Test
@@ -110,9 +110,9 @@ public class HybridGBMLcrossoverTest {
 																michiganX, pittsburghX);
 
 		List<IntegerSolution> offspring = crossover.execute(solutions);
-		System.out.println(offspring);
+//		System.out.println(offspring);
 
 		michiganProblem.michiganEvaluate(((PittsburghSolution)offspring.get(0)).getMichiganPopulation());
-		System.out.println();
+//		System.out.println();
 	}
 }

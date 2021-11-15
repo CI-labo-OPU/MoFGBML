@@ -3,9 +3,11 @@
   <groupId>cilabo.MoFGBML</groupId>
   <artifactId>MoFGBML</artifactId>
   <version>23.0.0-SNAPSHOT</version>
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>srctest</testSourceDirectory>
+
     <resources>
       <resource>
         <directory>src</directory>
@@ -14,7 +16,9 @@
         </excludes>
       </resource>
     </resources>
+
     <plugins>
+
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.0.2</version>
@@ -22,13 +26,32 @@
           <archive>
             <manifest>
               <mainClass>cilabo.labo.developing.fan2021.FAN2021_Main</mainClass>
+              <classpathPrefix>dependency/</classpathPrefix>>
               <addClasspath>true</addClasspath>
               <addExtensions>true</addExtensions>
-              <packageName>main</packageName>
             </manifest>
           </archive>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.5.1</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/dependency/</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
@@ -37,8 +60,11 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+
     </plugins>
+
   </build>
+
   <dependencies>
   	<dependency>
   		<groupId>org.apache.commons</groupId>
@@ -105,6 +131,7 @@
   		<groupId>org.junit.jupiter</groupId>
   		<artifactId>junit-jupiter-api</artifactId>
   		<version>5.7.0</version>
+  		<scope>test</scope>
   	</dependency>
   	<dependency>
   		<groupId>nz.ac.waikato.cms.weka</groupId>
@@ -112,4 +139,5 @@
   		<version>3.9.1</version>
   	</dependency>
   </dependencies>
+
 </project>
