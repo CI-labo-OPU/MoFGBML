@@ -45,17 +45,16 @@ public class TrainTestDatasetManager implements DatasetManager {
 	 * @return DatasetManager
 	 */
 	public TrainTestDatasetManager loadTrainTestFiles(String trainFile, String testFile) {
-		TrainTestDatasetManager manager = new TrainTestDatasetManager();
 
 		DataSet train = new DataSet();
 		Input.inputSingleLabelDataSet(train, trainFile);
-		manager.addTrains(train);
+		addTrains(train);
 
 		DataSet test = new DataSet();
 		Input.inputSingleLabelDataSet(test, testFile);
-		manager.addTests(test);
+		addTests(test);
 
-		return manager;
+		return this;
 	}
 
 	/**
@@ -63,7 +62,6 @@ public class TrainTestDatasetManager implements DatasetManager {
 	 * @return DatasetManager
 	 */
 	public TrainTestDatasetManager loadIrisTrial00() {
-		TrainTestDatasetManager manager = new TrainTestDatasetManager();
 		String sep = File.separator;
 		String fileName;
 
@@ -73,7 +71,7 @@ public class TrainTestDatasetManager implements DatasetManager {
 		fileName += sep + "a0_0_" + CommandLineArgs.dataName + "-10tra.dat";
 		DataSet train = new DataSet();
 		Input.inputSingleLabelDataSet(train, fileName);
-		manager.addTrains(train);
+		addTrains(train);
 
 		// Test dataset
 		fileName = Consts.DATASET;
@@ -81,9 +79,9 @@ public class TrainTestDatasetManager implements DatasetManager {
 		fileName += sep + "a0_0_" + CommandLineArgs.dataName + "-10tst.dat";
 		DataSet test = new DataSet();
 		Input.inputSingleLabelDataSet(test, fileName);
-		manager.addTests(test);
+		addTests(test);
 
-		return manager;
+		return this;
 	}
 
 }
