@@ -49,6 +49,8 @@ public class Consts {
 	public static int MAX_RULE_NUM = 60;
 	/** 1識別器あたりの最小ルール数 */
 	public static int MIN_RULE_NUM = 1;
+	/** ファジィセットの形状*/
+	public static String FUZZY_TERM_SHAPE_NAME = "triangle";
 
 	//FGBML ************************************
 	/** Michigan適用確率 */
@@ -114,6 +116,7 @@ public class Consts {
 		if(bundle.containsKey("INITIATION_RULE_NUM")) { INITIATION_RULE_NUM = Integer.parseInt(bundle.getString("INITIATION_RULE_NUM")); }
 		if(bundle.containsKey("MAX_RULE_NUM")) { MAX_RULE_NUM = Integer.parseInt(bundle.getString("MAX_RULE_NUM")); }
 		if(bundle.containsKey("MIN_RULE_NUM")) { MIN_RULE_NUM = Integer.parseInt(bundle.getString("MIN_RULE_NUM")); }
+		if(bundle.containsKey("FUZZY_TERM_SHAPE_NAME")) { FUZZY_TERM_SHAPE_NAME = bundle.getString("FUZZY_TERM_SHAPE_NAME"); }
 		if(bundle.containsKey("MICHIGAN_OPE_RT")) { MICHIGAN_OPE_RT = Double.parseDouble(bundle.getString("MICHIGAN_OPE_RT")); }
 		if(bundle.containsKey("RULE_CHANGE_RT")) { RULE_CHANGE_RT = Double.parseDouble(bundle.getString("RULE_CHANGE_RT")); }
 		if(bundle.containsKey("MICHIGAN_CROSS_RT")) { MICHIGAN_CROSS_RT = Double.parseDouble(bundle.getString("MICHIGAN_CROSS_RT")); }

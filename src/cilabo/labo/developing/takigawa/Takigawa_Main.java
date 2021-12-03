@@ -1,4 +1,4 @@
-package cilabo.labo.developing.fan2021;
+package cilabo.labo.developing.takigawa;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +28,7 @@ import cilabo.gbml.operator.crossover.PittsburghCrossover;
 import cilabo.gbml.operator.mutation.PittsburghMutation;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.gbml.solution.PittsburghSolution;
+import cilabo.main.AbstractArgs;
 import cilabo.main.Consts;
 import cilabo.metric.ErrorRate;
 import cilabo.metric.Metric;
@@ -40,7 +41,7 @@ import cilabo.utility.Random;
  *
  * FAN2021時点
  */
-public class FAN2021_Main {
+public class Takigawa_Main {
 	public static void main(String[] args) throws JMetalException, FileNotFoundException {
 		String sep = File.separator;
 
@@ -48,7 +49,7 @@ public class FAN2021_Main {
 		System.out.println();
 		System.out.println("==== INFORMATION ====");
 		String version = "1.0";
-		System.out.println("main: " + FAN2021_Main.class.getCanonicalName());
+		System.out.println("main: " + Takigawa_Main.class.getCanonicalName());
 		System.out.println("version: " + version);
 		System.out.println();
 		System.out.println("Algorithm: Hybrid-style Multiobjective Fuzzy Genetics-Based Machine Learning");
@@ -61,11 +62,11 @@ public class FAN2021_Main {
 		Output.mkdirs(Consts.ROOTFOLDER);
 
 		// set command arguments to static variables
-		CommandLineArgs.loadArgs(CommandLineArgs.class.getCanonicalName(), args);
+		AbstractArgs.loadArgs(CommandLineArgs.class.getCanonicalName(), args);
 		// Output constant parameters
 		String fileName = Consts.EXPERIMENT_ID_DIR + sep + "Consts.txt";
 		Output.writeln(fileName, Consts.getString(), true);
-		Output.writeln(fileName, CommandLineArgs.getParamsString(), true);
+		Output.writeln(fileName, AbstractArgs.getParamsString(), true);
 
 		// Initialize ForkJoinPool
 		Parallel.getInstance().initLearningForkJoinPool(CommandLineArgs.parallelCores);
@@ -182,3 +183,4 @@ public class FAN2021_Main {
 		return;
 	}
 }
+
