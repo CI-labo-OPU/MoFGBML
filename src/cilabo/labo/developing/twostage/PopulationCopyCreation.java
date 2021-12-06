@@ -10,7 +10,6 @@ import org.uma.jmetal.solution.Solution;
  * 2ndステージの初期個体群とすることで，
  * 疑似的にスムースな探索の流れを実現させる．
  *
- *
  * インスタンス生成時に必ず個体群のListを受け取る
  * create()は，その時受け取った個体群Listをそのまま返す．
  */
