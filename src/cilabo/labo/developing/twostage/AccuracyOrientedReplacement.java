@@ -1,5 +1,10 @@
 package cilabo.labo.developing.twostage;
 
+import java.util.List;
+
+import org.uma.jmetal.component.replacement.Replacement;
+import org.uma.jmetal.solution.Solution;
+
 /**
  * org.uma.jmetal.component.replacement.Replacementをimplements
  *
@@ -14,6 +19,12 @@ package cilabo.labo.developing.twostage;
  *
  * これは1stステージのReplacementとして使用される．
  */
-public class AccuracyOrientedReplacement {
+public class AccuracyOrientedReplacement<S extends Solution<?>> implements Replacement<S> {
+
+	//TODO 未実装
+	@Override
+	public List<S> replace(List<S> currentList, List<S> offspringList) {
+		return null;
+	}
 
 }
