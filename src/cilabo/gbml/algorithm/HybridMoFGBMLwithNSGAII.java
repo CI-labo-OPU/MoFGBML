@@ -36,6 +36,7 @@ import org.uma.jmetal.util.observable.impl.DefaultObservable;
 
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.gbml.component.variation.CrossoverAndMutationAndPittsburghLearningVariation;
+import cilabo.main.Consts;
 import cilabo.util.fileoutput.PittsburghSolutionListOutput;
 
 public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvolutionaryAlgorithm<S, List<S>>
@@ -179,6 +180,8 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 	    		String path = outputRootDir+sep+ "solutions-"+evaluations+".txt";
 	    		new PittsburghSolutionListOutput(getPopulation())
 	    			.printSolutionsToFile(new DefaultFileOutputContext(path), getPopulation());;
+	    	}else if(evaluations % (Consts.offspringPopulationSize*100) == 0) {
+    			System.out.print(String.valueOf(evaluations) + "->");
 	    	}
 	    }
 		else {
