@@ -13,6 +13,7 @@ import cilabo.data.ClassLabel;
 import cilabo.data.DataSet;
 import cilabo.data.InputVector;
 import cilabo.data.Pattern;
+import cilabo.labo.developing.fairness.FairnessPattern;
 
 public class Input {
 
@@ -97,6 +98,49 @@ public class Input {
 		}
 		return data;
 	}
+
+	/**
+	 *
+	 * @param data
+	 * @param fileName
+	 * @return
+	 */
+	public static DataSet inputFairnessDataSet(DataSet data, String fileName) {
+		List<double[]> lines = inputDataAsList(fileName);
+
+		// The first row is parameters of dataset
+		data.setDataSize( (int)lines.get(0)[0] );
+		data.setNdim( (int)lines.get(0)[1] );
+		data.setCnum( (int)lines.get(0)[2] );
+		lines.remove(0);
+
+		// Later second row are patterns
+		for(int p = 0; p < data.getDataSize(); p++) {
+			double[] line = lines.get(p);
+
+			int id = p;
+			double[] vector = new double[data.getNdim()];
+			int a;	//sensitive attribute
+			Integer C;
+
+			for(int n = 0; n < vector.length; n++) {
+				vector[n] = line[n];
+			}
+			a = (int)line[data.getNdim()];
+			C = (int)line[data.getNdim()+1];
+
+			InputVector inputVector = new InputVector(vector);
+			ClassLabel classLabel = new ClassLabel();
+			classLabel.addClassLabel(C);
+
+			Pattern pattern = new FairnessPattern(id, inputVector, classLabel, a);
+
+			data.addPattern(pattern);
+		}
+
+		return data;
+	}
+
 
 	public static DataSet inputSubdata(DataSet origin, DataSet divided, String fileName) {
 		List<double[]> lines = inputDataAsList(fileName);
