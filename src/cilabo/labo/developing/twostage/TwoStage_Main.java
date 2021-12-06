@@ -51,7 +51,7 @@ public class TwoStage_Main {
 		System.out.println("main: " + TwoStage_Main.class.getCanonicalName());
 		System.out.println("version: " + version);
 		System.out.println();
-		System.out.println("Algorithm: ???");
+		System.out.println("Algorithm: Two-stage for accuracy-oriented FGBML");
 		System.out.println("EMOA: NSGA-II");
 		System.out.println();
 		/* ********************************************************* */
