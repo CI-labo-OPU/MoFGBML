@@ -4,6 +4,7 @@ copy/
 python/
 results/
 doc/
+dataset/german/
 
 .DS_Store
 jMetal.log
