@@ -47,7 +47,7 @@ public class MakeParameter {
 		ArrayList<ForSortPattern> patterns = new ArrayList<ForSortPattern>();
 		for(int p = 0; p < tra.getDataSize(); p++) {
 			patterns.add( new ForSortPattern(tra.getPattern(p).getDimValue(dim),
-					tra.getPattern(p).getConClass()));
+					tra.getPattern(p).getTrueClass()));
 		}
 		Collections.sort(patterns, new Comparator<ForSortPattern>() {
 			@Override
