@@ -6,7 +6,7 @@ import cilabo.fuzzy.classifier.RuleBasedClassifier;
 import cilabo.labo.developing.fairness.FairnessPattern;
 import cilabo.metric.Metric;
 
-public class FalsePositiveRateDefference implements Metric {
+public class FalsePositiveRateDifference implements Metric {
 
 	/**
 	 * @param classifier : FuzzyClassifier

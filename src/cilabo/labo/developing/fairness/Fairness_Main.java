@@ -20,17 +20,22 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
 import cilabo.fuzzy.classifier.Classifier;
+import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
+import cilabo.fuzzy.knowledge.Knowledge;
+import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
+import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3_4_5;
 import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
 import cilabo.gbml.operator.crossover.PittsburghCrossover;
 import cilabo.gbml.operator.mutation.PittsburghMutation;
-import cilabo.gbml.problem.impl.pittsburgh.MOP1;
+import cilabo.gbml.problem.AbstractPitssburghGBML_Problem;
 import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.main.Consts;
 import cilabo.metric.ErrorRate;
 import cilabo.metric.Metric;
+import cilabo.utility.Input;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
 import cilabo.utility.Random;
@@ -90,17 +95,17 @@ public class Fairness_Main {
 		JMetalRandom.getInstance().setSeed(Consts.RAND_SEED);
 
 		/* Load Dataset ======================== */
-
-		/* ここから -> ************************************************* */
-		/* TODO
-		 * 公平性データを読み込むように変更 */
 		TrainTestDatasetManager datasetManager = new TrainTestDatasetManager();
-		datasetManager.loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
-		/* ここまで <- ********************************************************* */
+		DataSet train = new DataSet();
+		DataSet test = new DataSet();
+		Input.inputFairnessDataSet(train, CommandLineArgs.trainFile);
+		Input.inputFairnessDataSet(test, CommandLineArgs.trainFile);
+		datasetManager.addTrains(train);
+		datasetManager.addTests(test);
 
 		/* Run MoFGBML algorithm =============== */
-		DataSet train = datasetManager.getTrains().get(0);
-		DataSet test = datasetManager.getTests().get(0);
+		train = datasetManager.getTrains().get(0);
+		test = datasetManager.getTests().get(0);
 		fairnessMoFGBML(train, test);
 		/* ===================================== */
 
@@ -118,19 +123,24 @@ public class Fairness_Main {
 	public static void fairnessMoFGBML(DataSet train, DataSet test) {
 		String sep = File.separator;
 
-		/* ここから -> ************************************************* */
-		/* TODO
-		 * 公平性に関するMOPにする */
+		/** Fuzzy Initialization **/
+		/* 2-5分割 等分割三角型メンバシップ関数 */
+		float[][] params = HomoTriangle_2_3_4_5.getParams();
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+								.dimension(train.getNdim())
+								.params(params)
+								.build()
+								.create();
+		Classification classification = new SingleWinnerRuleSelection();
+
 		/* MOP: Multi-objective Optimization Problem */
-		MOP1<IntegerSolution> problem = new MOP1<>(train);
-		problem.setClassification(new SingleWinnerRuleSelection());
-		/* ここまで <- ********************************************************* */
+		AbstractPitssburghGBML_Problem<IntegerSolution> problem = getMOP(train);
 
 		/* Crossover: Hybrid-style GBML specific crossover operator. */
 		double crossoverProbability = 1.0;
 		/* Michigan operation */
 		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-																			 problem.getKnowledge(),
+																			 knowledge,
 																			 problem.getConsequentFactory());
 		/* Pittsburgh operation */
 		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
@@ -138,7 +148,7 @@ public class Fairness_Main {
 		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
 																				michiganX, pittsburghX);
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
-		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(knowledge, train);
 
 		/* Termination: Number of total evaluations */
 		Termination termination = new TerminationByEvaluations(Consts.terminateEvaluation);
@@ -171,7 +181,39 @@ public class Fairness_Main {
         	.setFunFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"FUN.csv", ","))
         	.print();
 
-	    // Test data
+	    /* Output results from non-dominated solutions in final generation */
+	    outputResults(nonDominatedSolutions, train, test);
+
+		return;
+	}
+
+	public static AbstractPitssburghGBML_Problem<IntegerSolution> getMOP(DataSet train) {
+		AbstractPitssburghGBML_Problem<IntegerSolution> mop = null;
+		switch(CommandLineArgs.mopIndex) {
+		case 1:
+			mop = new MOP1_fairness<>(train);
+			break;
+
+		case 2:
+			mop = new MOP2_fairness<>(train);
+			break;
+
+		case 3:
+			mop = new MOP3_fairness<>(train);
+			break;
+
+		case 4:
+			mop = new MOP4_fairness<>(train);
+			break;
+		}
+		return mop;
+	}
+
+	//TODO TODO TODO
+	public static void outputResults(List<IntegerSolution> nonDominatedSolutions, DataSet train, DataSet test) {
+		String sep = File.separator;
+
+		// Test data
 	    ArrayList<String> strs = new ArrayList<>();
 	    String str = "pop,test";
 	    strs.add(str);
@@ -188,10 +230,7 @@ public class Fairness_Main {
 	    }
 	    String fileName = Consts.EXPERIMENT_ID_DIR + sep + "results.csv";
 	    Output.writeln(fileName, strs, false);
-
-		return;
 	}
-
 
 
 }

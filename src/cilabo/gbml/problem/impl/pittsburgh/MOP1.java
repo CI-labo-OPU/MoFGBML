@@ -44,8 +44,6 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	private DataSet evaluationDataset;
 	private float[][] params = HomoTriangle_2_3_4_5.getParams();
 
-
-
 	// ************************************
 	public MOP1(DataSet train) {
 		this.evaluationDataset = train;
