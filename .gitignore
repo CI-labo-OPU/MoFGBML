@@ -3,7 +3,7 @@ copy/
 python/
 results/
 doc/
-!target/RUNjar.ps1
+target
 
 .DS_Store
 jMetal.log

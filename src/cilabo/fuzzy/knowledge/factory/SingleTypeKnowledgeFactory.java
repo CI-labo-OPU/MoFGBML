@@ -96,6 +96,13 @@ public class SingleTypeKnowledgeFactory implements KnowledgeFactory {
 			return this;
 		}
 
+		/**
+		 * Select name of Knowldge's shape. For exmaple, "triangle", "trapezoid", "interval", and "gaussian".
+		 * Defualt shape set "triangle".
+		 *
+		 * @param fuzzyTermShapeName
+		 * @return
+		 */
 		public SingleTypeKnowledgeFactory.KnowledgeBuilder fuzzyTermShapeName(String fuzzyTermShapeName) {
 			this.fuzzyTermShapeName = fuzzyTermShapeName;
 			return this;

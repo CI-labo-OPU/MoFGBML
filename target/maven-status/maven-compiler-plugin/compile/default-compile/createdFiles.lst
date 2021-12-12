@@ -211,7 +211,6 @@ org\uma\jmetal\util\distance\Distance.class
 org\uma\jmetal\component\variation\Variation.class
 org\uma\jmetal\example\singleobjective\GenerationalGeneticAlgorithmBinaryEncodingRunner.class
 org\uma\jmetal\util\sequencegenerator\impl\IntegerBoundedSequenceGenerator.class
-cilabo\labo\developing\takigawa\Takigawa_Main.class
 cilabo\fuzzy\rule\consequent\factory\MultiLabel_MoFGBML_Learning.class
 jfml\defuzzifier\DefuzzifierCenterOfGravitySingletons.class
 org\uma\jmetal\problem\binaryproblem\BinaryProblem.class
@@ -579,7 +578,6 @@ org\uma\jmetal\util\fileoutput\SolutionListOutput.class
 cilabo\fuzzy\knowledge\Knowledge.class
 org\uma\jmetal\problem\multiobjective\dtlz\DTLZ2_2D.class
 org\uma\jmetal\algorithm\multiobjective\smpso\SMPSOMeasures.class
-cilabo\labo\developing\takigawa\CommandLineArgs.class
 org\uma\jmetal\operator\mutation\impl\CharSequenceRandomMutation.class
 cilabo\gbml\component\variation\MichiganSolutionVariation.class
 org\uma\jmetal\example\multiobjective\smpso\SMPSOHvRunner.class

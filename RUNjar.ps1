@@ -1,6 +1,6 @@
 $dataName = "iris"
 $parallelCores = 12
-$algorithmID = "FAN2021"
+$algorithmID = "makeParameterTest"
 $experimentID = "trial"
 $logFileName = $algorithmID + "_log.txt"
 
