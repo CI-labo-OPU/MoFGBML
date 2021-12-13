@@ -8,6 +8,8 @@ package cilabo.labo.developing.twostage;
  * 2ndステージの初期個体群は1stの結果から始めたい
  * -> createInitialPopulation()の中身を書き換えるのはどうか？
  */
+	//TODO 今までのMoFGBMLをそのまま使うので，このクラスは必要ない可能性大．
+	//TODO
 public class SecondStageAlgorithm {
 
 }

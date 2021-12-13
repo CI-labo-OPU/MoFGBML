@@ -295,4 +295,9 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 		return this;
 	}
 
+	public HybridMoFGBMLwithNSGAII<S> setEvaluations(int evaluations) {
+		this.evaluations = evaluations;
+		return this;
+	}
+
 }
