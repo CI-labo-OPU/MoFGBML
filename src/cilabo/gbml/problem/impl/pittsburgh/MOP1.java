@@ -13,7 +13,7 @@ import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.knowledge.Knowledge;
-import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
+import cilabo.fuzzy.knowledge.factory.SingleTypeKnowledgeFactory;
 import cilabo.fuzzy.knowledge.membershipParams.MakeParameter;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.antecedent.AntecedentFactory;
@@ -55,24 +55,17 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		setNumberOfConstraints(0);
 		setName("MOP1_minError_and_minNrule");
 
-		//変更箇所
 		MakeParameter makeParameter = new MakeParameter();
 		makeParameter.makeHomePartition(new int[] {2, 3, 4, 5});
 		params = makeParameter.triangle();
 
-		// Initialization
-//		this.knowledge = SingleTypeKnowledgeFactory.builder()
-//				.dimension(train.getNdim())
-//				.params(params)
-//				.fuzzyTermShapeName("triangle")
-//				.build()
-//				.create();
-		this.knowledge = HomoTriangleKnowledgeFactory.builder()
+//		 Initialization
+		this.knowledge = SingleTypeKnowledgeFactory.builder()
 				.dimension(train.getNdim())
 				.params(params)
+				.fuzzyTermShapeName("triangle")
 				.build()
 				.create();
-		//変更箇所
 
 		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
 										.knowledge(knowledge)
