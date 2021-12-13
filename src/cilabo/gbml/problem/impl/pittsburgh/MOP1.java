@@ -14,7 +14,7 @@ import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
-import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3_4_5;
+import cilabo.fuzzy.knowledge.membershipParams.MakeParameter;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.antecedent.AntecedentFactory;
 import cilabo.fuzzy.rule.antecedent.factory.HeuristicRuleGenerationMethod;
@@ -42,7 +42,8 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	private Knowledge knowledge;
 	private Classification classification;
 	private DataSet evaluationDataset;
-	private float[][] params = HomoTriangle_2_3_4_5.getParams();
+//	private float[][] params = HomoTriangle_2_3_4_5.getParams();
+	private float[][] params;
 
 
 
@@ -54,12 +55,25 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		setNumberOfConstraints(0);
 		setName("MOP1_minError_and_minNrule");
 
+		//変更箇所
+		MakeParameter makeParameter = new MakeParameter();
+		makeParameter.makeHomePartition(new int[] {2, 3, 4, 5});
+		params = makeParameter.triangle();
+
 		// Initialization
+//		this.knowledge = SingleTypeKnowledgeFactory.builder()
+//				.dimension(train.getNdim())
+//				.params(params)
+//				.fuzzyTermShapeName("triangle")
+//				.build()
+//				.create();
 		this.knowledge = HomoTriangleKnowledgeFactory.builder()
 				.dimension(train.getNdim())
 				.params(params)
 				.build()
 				.create();
+		//変更箇所
+
 		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
 										.knowledge(knowledge)
 										.train(train)

@@ -23,14 +23,16 @@ public class MakeParameter {
 	public void makeHomePartition(int[] K) {
 		this.partitions = new ArrayList<ArrayList<Double>>();
 		this.K = K;
-		fuzzySetNum = 0;
+		this.fuzzySetNum = 0;
 		for(int k: K) {
 			ArrayList<Double> partition = new ArrayList<Double>();
-			for(int i=0; i<=k; i++) {
+			partition.add(0d);
+			for(int i=1; i<k; i++) {
 				partition.add( (double)(2*i-1)/((k-1)*2) );
 			}
+			partition.add(1d);
 			this.partitions.add(partition);
-			fuzzySetNum += k;
+			this.fuzzySetNum += k;
 		}
 		this.divisionType = 1;
 	}
@@ -42,8 +44,9 @@ public class MakeParameter {
 	 * @param dim 導出する属性の次元を指定
 	 */
 	public void makePartition(DataSet tra, int[] K, int dim) {
-		//boundaries[分割数][境界値]
-		ArrayList<ArrayList<Double>> boundaries = new ArrayList<ArrayList<Double>>();
+		this.partitions = new ArrayList<ArrayList<Double>>();
+		this.K = K;
+		this.fuzzySetNum = 0;
 
 		//Step 0. Judge Categoric.
 		if(tra.getPattern(0).getDimValue(dim) < 0) {
@@ -70,8 +73,9 @@ public class MakeParameter {
 		//Step 3. add boundaries
 		for(int k: K) {
 			// Optimal Splitting.
-			ArrayList<Double> partitions = optimalSplitting(patterns, k, tra.getCnum());
-			boundaries.add(partitions);
+			ArrayList<Double> boundaries = optimalSplitting(patterns, k, tra.getCnum());
+			partitions.add(boundaries);
+			this.fuzzySetNum += k;
 		}
 		this.divisionType = 2;
 	}
@@ -82,40 +86,59 @@ public class MakeParameter {
 	 * @return パラメータ[ファジイセットID][パラメータ]
 	 */
 	public float[][] triangle(){
-		if(this.divisionType == 1) {
-			float[][] params = new float[this.fuzzySetNum][3];
-			for(int K_i: this.K) {
-				for(int i=0; i<K_i; i++) {
-					if(i == 0) {
-						params[i] = new float[] {0f, 0f, 2*(float)(double)partitions.get(K_i).get(i+1)};
-					}else if(i == partitions.get(K_i).size()-2) {
-						params[i] = new float[] {2*(float)(double)partitions.get(K_i).get(i) - 1f, 1f, 1f};
-					}else if(0 < i && i < partitions.get(K_i).size()-2){
-						float left = (float)(double)partitions.get(K_i).get(i), right = (float)(double)partitions.get(K_i).get(i+1);
-						params[i] = new float[] {left*3f/2f - right/2f, (left+right)/2f, right*3f/2f - left/2f};
-					}
+		float[][] params = new float[this.fuzzySetNum][3];
+		for(int K_i=0, cnt=0; K_i<this.K.length; K_i++) {
+			for(int i=0; i<K[K_i]; i++, cnt++) {
+				if(i == 0) {
+					params[cnt] = new float[] {0f, 0f, 2*(float)(double)partitions.get(K_i).get(i+1)};
+				}else if(i == partitions.get(K_i).size()-2) {
+					params[cnt] = new float[] {2*(float)(double)partitions.get(K_i).get(i) - 1f, 1f, 1f};
+				}else if(0 < i && i < partitions.get(K_i).size()-2){
+					float left = (float)(double)partitions.get(K_i).get(i), right = (float)(double)partitions.get(K_i).get(i+1);
+					params[cnt] = new float[] {left*3f/2f - right/2f, (left+right)/2f, right*3f/2f - left/2f};
 				}
 			}
-			return params;
-		}else if(this.divisionType == 2){
-			float[][] params = new float[this.fuzzySetNum][4];
-			for(int K_i: this.K) {
-				for(int i=0; i<K_i; i++) {
-					if(i == 0) {
-						params[i] = new float[] {0f, 0f, 2*(float)(double)partitions.get(K_i).get(i+1)};
-					}else if(i == partitions.get(K_i).size()-2) {
-						params[i] = new float[] {2*(float)(double)partitions.get(K_i).get(i) - 1f, 1f, 1f};
-					}else if(0 < i && i < partitions.get(K_i).size()-2){
-						float left = (float)(double)partitions.get(K_i).get(i), right = (float)(double)partitions.get(K_i).get(i+1);
-						params[i] = new float[] {left*3f/2f - right/2f, (left+right)/2f, right*3f/2f - left/2f};
-					}
-				}
-			}
-			return params;
 		}
-		return null;
+		return params;
 	}
 
+	/**
+	 * 不均一な線形型のパラメータを生成する．
+	 *
+	 * @return パラメータ[ファジイセットID][パラメータ](台形型パラメータ)
+	 */
+	public float[][] linerShape(double F){
+		float[][] params = new float[this.fuzzySetNum][4];
+		for(int K_i=0, cnt=0; K_i<this.K.length; K_i++) {
+
+			ArrayList<Float> newPoints = new ArrayList<>();
+			//領域左端の点を追加
+			newPoints.add(0f);
+			newPoints.add(0f);
+
+			//Step 1. Fuzzify each partition without edge of domain.
+			for(int i = 1; i < this.partitions.get(K_i).size() - 1; i++) {
+				double left = this.partitions.get(K_i).get(i - 1);
+				double point = this.partitions.get(K_i).get(i);
+				double right = this.partitions.get(K_i).get(i + 1);
+				newPoints.addAll(fuzzify(left, point, right, F));
+			}
+
+			//Step 2. Take 4 points as trapezoids in order from head of newPoints.
+			//領域右端の点を追加
+			newPoints.add(1f);
+			newPoints.add(1f);
+
+			for(int i = 0; i < (newPoints.size() - 2) / 2; i++, cnt++) {
+				float[] trapezoid = new float[4];
+				for(int j = 0; j < 4; j++) {
+					trapezoid[j] = newPoints.get(i*2 + j);
+				}
+				params[cnt] = trapezoid;
+			}
+		}
+		return params;
+	}
 
 
 	/**
@@ -125,16 +148,16 @@ public class MakeParameter {
 	 */
 	public float[][] gaussian(){
 		float[][] params = new float[this.fuzzySetNum][2];
-		for(int K_i: this.K) {
-			for(int i=0; i<K_i; i++) {
+		for(int K_i=0, cnt=0; K_i<this.K.length; K_i++) {
+			for(int i=0; i<K[K_i]; i++, cnt++) {
 				//最初と最後だけ頂点が区間端になるようにする．
 				if(i == 0){
-					params[i] = calcGaussParam(0, (float)(double)partitions.get(K_i).get(i+1), 0.5f);
+					params[cnt] = calcGaussParam(0, (float)(double)partitions.get(K_i).get(i+1), 0.5f);
 				}else if(i == partitions.get(K_i).size()-2) {
-					params[i] = calcGaussParam(1, (float)(double)partitions.get(K_i).get(i), 0.5f);
+					params[cnt] = calcGaussParam(1, (float)(double)partitions.get(K_i).get(i), 0.5f);
 				}else  if(0 < i && i < partitions.get(K_i).size()-2){
 					double left = partitions.get(K_i).get(i), right = partitions.get(K_i).get(i+1);
-					params[i] = calcGaussParam((float)(left + right)/2, (float)(double)partitions.get(K_i).get(i), 0.5f);
+					params[cnt] = calcGaussParam((float)(left + right)/2, (float)(double)partitions.get(K_i).get(i), 0.5f);
 				}
 			}
 		}
@@ -175,9 +198,9 @@ public class MakeParameter {
 	 */
 	public float[][] rectangle(){
 		float[][] params = new float[this.fuzzySetNum][2];
-		for(int K_i: this.K) {
-			for(int i=0; i<K_i; i++) {
-				params[i] = new float[] {(float)(double)partitions.get(K_i).get(i), (float)(double)partitions.get(K_i).get(i+1)};
+		for(int K_i=0, cnt=0; K_i<this.K.length; K_i++) {
+			for(int i=0; i<K[K_i]; i++, cnt++) {
+				params[cnt] = new float[] {(float)(double)partitions.get(K_i).get(i), (float)(double)partitions.get(K_i).get(i+1)};
 			}
 		}
 		return params;
@@ -190,15 +213,15 @@ public class MakeParameter {
 	 */
 	public float[][] trapezoid(){
 		float[][] params = new float[this.fuzzySetNum][4];
-		for(int K_i: this.K) {
-			for(int i=0; i<K_i; i++) {
+		for(int K_i=0, cnt=0; K_i<this.K.length; K_i++) {
+			for(int i=0; i<K[K_i]; i++, cnt++) {
 				if(i == 0) {
-					params[i] = new float[] {0f, 0f, (float)0.5*(float)(double)partitions.get(K_i).get(i+1), (float)1.5*(float)(double)partitions.get(K_i).get(i+1)};
+					params[cnt] = new float[] {0f, 0f, (float)0.5*(float)(double)partitions.get(K_i).get(i+1), (float)1.5*(float)(double)partitions.get(K_i).get(i+1)};
 				}else if(i == partitions.get(K_i).size()-2) {
-					params[i] = new float[] {(float)1.5*(float)(double)partitions.get(K_i).get(i) - 0.5f, (float)0.5*(float)(double)partitions.get(K_i).get(i) + 0.5f, 1f, 1f};
+					params[cnt] = new float[] {(float)1.5*(float)(double)partitions.get(K_i).get(i) - 0.5f, (float)0.5*(float)(double)partitions.get(K_i).get(i) + 0.5f, 1f, 1f};
 				}else {
 					float left = (float)(double)partitions.get(K_i).get(i), right = (float)(double)partitions.get(K_i).get(i+1);
-					params[i] = new float[] {left*5f/4f - right/4f, left*3f/4f + right/4f, right*3f/4f + left/4f, right*5f/4f - left/4f};
+					params[cnt] = new float[] {left*5f/4f - right/4f, left*3f/4f + right/4f, right*3f/4f + left/4f, right*5f/4f - left/4f};
 				}
 			}
 		}
@@ -326,39 +349,6 @@ public class MakeParameter {
 		return partitions;
 	}
 
-	public static ArrayList<double[]> makeTrapezoids(ArrayList<Double> partitions, double F) {
-		ArrayList<double[]> trapezoids = new ArrayList<>();
-
-		ArrayList<Double> newPoints = new ArrayList<>();
-
-		//Step 1. Fuzzify each partition without edge of domain.
-		for(int i = 1; i < partitions.size() - 1; i++) {
-			double left = partitions.get(i - 1);
-			double point = partitions.get(i);
-			double right = partitions.get(i + 1);
-			newPoints.addAll(fuzzify(left, point, right, F));
-		}
-
-		//Step 2. Take 4 points as trapezoids in order from head of newPoints.
-		newPoints.add(0, 0.0);
-		newPoints.add(0, 0.0);
-		newPoints.add(1.0);
-		newPoints.add(1.0);
-
-		int head = 0;
-		int K = (newPoints.size() - 2) / 2;
-		for(int i = 0; i < K; i++) {
-			double[] trapezoid = new double[4];
-			for(int j = 0; j < 4; j++) {
-				trapezoid[j] = newPoints.get(head + j);
-			}
-			trapezoids.add(trapezoid);
-			head += 2;
-		}
-
-		return trapezoids;
-	}
-
 	/**
 	 * <h1>Fuzzifying Partition</h1>
 	 * Fuzzify two partitions [left, point] and [point, right].<br>
@@ -369,8 +359,8 @@ public class MakeParameter {
 	 * @param F : double : Grade of overwraping
 	 * @return {@literal ArrayList<Double} : fuzzfied two point
 	 */
-	public static ArrayList<Double> fuzzify(double left, double point, double right, double F) {
-		ArrayList<Double> two = new ArrayList<>();
+	public static ArrayList<Float> fuzzify(double left, double point, double right, double F) {
+		ArrayList<Float> two = new ArrayList<>();
 
 		//Step 1. Minimize Range (left-point) or (point-right)
 		if( (point-left) < (right-point) ) {
@@ -392,8 +382,8 @@ public class MakeParameter {
 		double bd_F = bd_F0 + (bd_F1 - bd_F0)*F;
 
 		//Step 4. Get Fuzzified two point which has membership value 1.0.
-		two.add(ac_F);
-		two.add(bd_F);
+		two.add((float)ac_F);
+		two.add((float)bd_F);
 
 		return two;
 	}
