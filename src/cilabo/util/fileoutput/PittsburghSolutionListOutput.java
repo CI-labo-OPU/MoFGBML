@@ -38,6 +38,33 @@ public class PittsburghSolutionListOutput extends SolutionListOutput {
 		this.printSolutionsToFile(solutionFileContext, solutionList);
 	}
 
+	public void printObjectivesToFile(FileOutputContext context, List<? extends Solution<?>> solutionList) {
+		BufferedWriter bufferedWriter = context.getFileWriter();
+		try {
+			if(solutionList.size() > 0) {
+				int numberOfObjectives = solutionList.get(0).getNumberOfObjectives();
+				String str = "f0";
+				for(int i = 1; i < numberOfObjectives; i++) {
+					str += "," + "f"+i;
+				}
+				bufferedWriter.write(str);
+				bufferedWriter.newLine();
+				for(int i = 0; i < solutionList.size(); i++) {
+					str = String.valueOf(solutionList.get(i).getObjective(0));
+					for(int j = 1; j < numberOfObjectives; j++) {
+						str += "," + solutionList.get(i).getObjective(j);
+					}
+					bufferedWriter.write(str);
+					bufferedWriter.newLine();
+				}
+				bufferedWriter.close();
+			}
+		}
+		catch (IOException e) {
+			throw new JMetalException("Error writing data ", e);
+		}
+	}
+
 	public void printSolutionsToFile(FileOutputContext context, List<? extends Solution<?>> solutionList) {
 		BufferedWriter bufferedWriter = context.getFileWriter();
 		try {

@@ -8,6 +8,8 @@ import java.net.URLClassLoader;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import cilabo.fuzzy.knowledge.Knowledge;
+
 /**
  * 各種定数 定義クラス
  * Consts.[変数名]でアクセス可能
@@ -28,6 +30,7 @@ public class Consts {
 	public static int terminateGeneration = 5000;
 	public static int terminateEvaluation = 300000;
 	public static int outputFrequency = 6000;
+	public static Knowledge knowledge;
 
 	//Random Number ***************************************
 	public static int RAND_SEED = 2020;

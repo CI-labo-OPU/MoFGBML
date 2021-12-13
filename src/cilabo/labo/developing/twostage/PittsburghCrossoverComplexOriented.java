@@ -126,29 +126,6 @@ public class PittsburghCrossoverComplexOriented implements CrossoverOperator<Int
 			/** Number of rules inherited from parent2.  */
 			int N2 = selectRandomGenerator.getRandomValue(0, parent2.getMichiganPopulation().size());
 
-			// Reduciong excess of rules
-			if((N1+N2) > Consts.MAX_RULE_NUM) {
-				int delNum = (N1+N2) - Consts.MAX_RULE_NUM;
-				for(int i = 0; i < delNum; i++) {
-					if( N1 > 0 && N2 > 0){
-						if(selectRandomGenerator.getRandomValue(0, 1) == 0) {
-							N1--;
-						}
-						else {
-							N2--;
-						}
-					}
-					else if(N1 == 0 && N2 > 0) {
-						N2--;
-					}
-					else if(N1 > 0 && N2 == 0) {
-						N1--;
-					}
-					else {
-						break;
-					}
-				}
-			}
 			// Replenishing lack of number of rules
 			if((N1+N2) < Consts.MIN_RULE_NUM) {
 				int lackNum = Consts.MIN_RULE_NUM - (N1+N2);
@@ -206,7 +183,7 @@ public class PittsburghCrossoverComplexOriented implements CrossoverOperator<Int
 				}
 			}
 
-			List<IntegerSolution> manyRules;
+			List<IntegerSolution> manyRules = null;
 			if(michiganPopulation1.size() >= michiganPopulation2.size()) {
 				manyRules = michiganPopulation1;
 			}

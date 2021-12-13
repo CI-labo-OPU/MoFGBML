@@ -5,6 +5,7 @@ python/
 results/
 doc/
 dataset/german/
+dataset/phoneme/
 
 .DS_Store
 jMetal.log

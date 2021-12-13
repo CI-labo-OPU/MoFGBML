@@ -6,15 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.uma.jmetal.component.initialsolutioncreation.InitialSolutionsCreation;
+import org.uma.jmetal.component.replacement.Replacement;
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
 import org.uma.jmetal.operator.mutation.MutationOperator;
 import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.fileoutput.SolutionListOutput;
-import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetal.util.observer.impl.EvaluationObserver;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
@@ -22,7 +20,6 @@ import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
 import cilabo.fuzzy.classifier.Classifier;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
-import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
 import cilabo.gbml.operator.crossover.PittsburghCrossover;
@@ -32,6 +29,8 @@ import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.main.Consts;
 import cilabo.metric.ErrorRate;
 import cilabo.metric.Metric;
+import cilabo.metric.RuleLength;
+import cilabo.metric.RuleNum;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
 import cilabo.utility.Random;
@@ -63,6 +62,8 @@ public class TwoStage_Main {
 
 		// set command arguments to static variables
 		CommandLineArgs.loadArgs(CommandLineArgs.class.getCanonicalName(), args);
+		// set max number of rules to large value
+		Consts.MAX_RULE_NUM = 5000;
 		// Output constant parameters
 		String fileName = Consts.EXPERIMENT_ID_DIR + sep + "Consts.txt";
 		Output.writeln(fileName, Consts.getString(), true);
@@ -123,6 +124,10 @@ public class TwoStage_Main {
 	public static void twoStageMoFGBML(DataSet train, DataSet test) {
 		String sep = File.separator;
 
+		/* MOP: Multi-objective Optimization Problem */
+		MOP1<IntegerSolution> problem = new MOP1<>(train);
+		problem.setClassification(new SingleWinnerRuleSelection());
+		Consts.knowledge = problem.getKnowledge();
 
 		//TODO 仮置き
 		List<IntegerSolution> population = null;
@@ -132,22 +137,25 @@ public class TwoStage_Main {
 		/* ======================================= */
 		/* == 1st Stage                         == */
 		/* ======================================= */
-
+		FirstStageAlgorithm<IntegerSolution> firstAlgorithm = make1stStageAlgorithm(train, test, problem);
+		/* === GA RUN === */
+		firstAlgorithm.run();
+		/* ============== */
+		population = firstAlgorithm.getPopulation();
+		nowEvaluations = firstAlgorithm.getEvaluations();
 		/* ======================================= */
 
+		System.out.println("== Changed stage: EVALUATIONS="+nowEvaluations+" ==");
 
 		/* ======================================= */
 		/* == 2nd Stage                         == */
 		/* ======================================= */
-		HybridMoFGBMLwithNSGAII<IntegerSolution> secondAlgorithm = make2ndStageAlgorithm(train, test);
-
-		/* Set current population as the initial population for 2nd stage */
-		InitialSolutionsCreation<IntegerSolution> initialSolutionsCreationForSecond = new PopulationCopyCreation<>(population);
-		secondAlgorithm.setInitialSolutionsCreation(initialSolutionsCreationForSecond);
-
-		/* Set current number of evaluations */
-		secondAlgorithm.setEvaluations(nowEvaluations);
-
+		SecondStageAlgorithm<IntegerSolution> secondAlgorithm
+		= make2ndStageAlgorithm(train, test, problem,
+								/* Set current population as the initial population for 2nd stage */
+								population,
+								/* Set current number of evaluations */
+								nowEvaluations);
 		/* === GA RUN === */
 		secondAlgorithm.run();
 		/* ============== */
@@ -155,36 +163,57 @@ public class TwoStage_Main {
 
 		/* Non-dominated solutions in final generation */
 		List<IntegerSolution> nonDominatedSolutions = secondAlgorithm.getResult();
-	    new SolutionListOutput(nonDominatedSolutions)
-        	.setVarFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"VAR.csv", ","))
-        	.setFunFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"FUN.csv", ","))
-        	.print();
-
-	    // Test data
-	    ArrayList<String> strs = new ArrayList<>();
-	    String str = "pop,test";
-	    strs.add(str);
-
-	    Metric metric = new ErrorRate();
-	    for(int i = 0; i < nonDominatedSolutions.size(); i++) {
-	    	IntegerSolution solution = nonDominatedSolutions.get(i);
-	    	Classifier classifier = ((PittsburghSolution)solution).getClassifier();
-	    	double errorRate = (double)metric.metric(classifier, test);
-
-	    	str = String.valueOf(i);
-	    	str += "," + errorRate;
-	    	strs.add(str);
-	    }
-	    String fileName = Consts.EXPERIMENT_ID_DIR + sep + "results.csv";
-	    Output.writeln(fileName, strs, false);
+	    outputResults(nonDominatedSolutions, train,test);
 
 		return;
 	}
 
-	public static HybridMoFGBMLwithNSGAII<IntegerSolution> make2ndStageAlgorithm(DataSet train, DataSet test) {
-		/* MOP: Multi-objective Optimization Problem */
-		MOP1<IntegerSolution> problem = new MOP1<>(train);
-		problem.setClassification(new SingleWinnerRuleSelection());
+	public static FirstStageAlgorithm<IntegerSolution> make1stStageAlgorithm(DataSet train, DataSet test, MOP1<IntegerSolution> problem) {
+		/* Crossover: Hybrid-style GBML specific crossover operator. */
+		double crossoverProbability = 1.0;
+
+		/* Michigan operation */
+		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
+																			 problem.getKnowledge(),
+																			 problem.getConsequentFactory());
+		/* Pittsburgh operation: Complex-oriented Pittsburgh-style crossover */
+		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossoverComplexOriented(Consts.PITTSBURGH_CROSS_RT);
+
+		/* Hybrid-style crossover */
+		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
+																				michiganX, pittsburghX);
+		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
+
+		/* Termination: TODO TODO TODO */
+		Termination termination = new ChangeStageTermination(CommandLineArgs.changeStageSetting);
+
+		/* Algorithm: Hybrid-style MoFGBML with NSGA-II */
+		FirstStageAlgorithm<IntegerSolution> algorithm
+			= new FirstStageAlgorithm<>(problem,
+										Consts.populationSize,
+										Consts.offspringPopulationSize,
+										Consts.outputFrequency,
+										Consts.EXPERIMENT_ID_DIR,
+										crossover,
+										mutation,
+										termination,
+										problem.getConsequentFactory()
+										);
+		/* Running observation */
+		EvaluationObserver evaluationObserver = new EvaluationObserver(Consts.outputFrequency);
+		algorithm.getObservable().register(evaluationObserver);
+
+		/* Replacement: Accuracy-oriented replacement */
+		Replacement<IntegerSolution> replacement = new AccuracyOrientedReplacement<>();
+		algorithm.setReplacement(replacement);
+
+		return algorithm;
+	}
+
+	public static SecondStageAlgorithm<IntegerSolution> make2ndStageAlgorithm(DataSet train, DataSet test, MOP1<IntegerSolution> problem,
+																				List<IntegerSolution> population, int nowEvaluations) {
+
 
 		/* Crossover: Hybrid-style GBML specific crossover operator. */
 		double crossoverProbability = 1.0;
@@ -195,7 +224,6 @@ public class TwoStage_Main {
 																			 problem.getConsequentFactory());
 		/* Pittsburgh operation */
 		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
-		/* ここまで <- ********************************************************* */
 
 		/* Hybrid-style crossover */
 		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
@@ -207,8 +235,8 @@ public class TwoStage_Main {
 		Termination termination = new TerminationByEvaluations(Consts.terminateEvaluation);
 
 		/* Algorithm: Hybrid-style MoFGBML with NSGA-II */
-		HybridMoFGBMLwithNSGAII<IntegerSolution> algorithm
-			= new HybridMoFGBMLwithNSGAII<>(problem,
+		SecondStageAlgorithm<IntegerSolution> algorithm
+			= new SecondStageAlgorithm<>(problem,
 											Consts.populationSize,
 											Consts.offspringPopulationSize,
 											Consts.outputFrequency,
@@ -216,7 +244,8 @@ public class TwoStage_Main {
 											crossover,
 											mutation,
 											termination,
-											problem.getConsequentFactory()
+											problem.getConsequentFactory(),
+											population, nowEvaluations
 											);
 
 		/* Running observation */
@@ -224,6 +253,45 @@ public class TwoStage_Main {
 		algorithm.getObservable().register(evaluationObserver);
 
 		return algorithm;
+	}
+
+	// TODO TODO TODO
+	public static void outputResults(List<IntegerSolution> nonDominatedSolutions, DataSet train, DataSet test) {
+		String sep = File.separator;
+
+		ArrayList<String> strs = new ArrayList<>();
+		String str = "";
+
+		/* Functions */
+		Metric errorRate = new ErrorRate();
+		Metric ruleNum = new RuleNum();
+		Metric ruleLength = new RuleLength();
+
+		/* Header */
+		str = "pop";
+		str += "," + "errorRate_Dtra" + "," + "errorRate_Dtst";
+		str += "," + "ruleNum";
+		str += "," + "ruleLength";
+		strs.add(str);
+
+		for(int i = 0; i < nonDominatedSolutions.size(); i++) {
+			IntegerSolution solution = nonDominatedSolutions.get(i);
+			Classifier classifier = ((PittsburghSolution)solution).getClassifier();
+
+			// pop
+			str = String.valueOf(i);
+			// Error Rate
+			str += "," + errorRate.metric(classifier, train);
+			str += "," + errorRate.metric(classifier, test);
+			// Number of rules
+			str += "," + ruleNum.metric(classifier);
+			// Rule Length
+			str += "," + ruleLength.metric(classifier);
+
+			strs.add(str);
+		}
+		String fileName = Consts.EXPERIMENT_ID_DIR + sep + "results.csv";
+		Output.writeln(fileName, strs, false);
 	}
 
 

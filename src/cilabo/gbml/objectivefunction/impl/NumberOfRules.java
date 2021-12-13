@@ -29,8 +29,18 @@ public class NumberOfRules implements ObjectiveFunction<PittsburghSolution, Doub
 			}
 		}
 
-		solution.setMichiganPopulation(newMichiganPopulation);
-		double numberOfRules = solution.getMichiganPopulation().size();
+		double numberOfRules;
+		// もし勝者ルールが1つも含まれない場合、ルール数を大きくして個体の評価を悪くする．
+		// そして、念のため削除前のルール集合を残しておく
+		if(newMichiganPopulation.size() == 0) {
+			numberOfRules = Double.MAX_VALUE;
+			solution.setMichiganPopulation(michiganPopulation);
+		}
+		else {
+			solution.setMichiganPopulation(newMichiganPopulation);
+			numberOfRules = solution.getMichiganPopulation().size();
+		}
+
 		return numberOfRules;
 	}
 }
