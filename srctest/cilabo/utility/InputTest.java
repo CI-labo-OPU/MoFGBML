@@ -10,7 +10,7 @@ import cilabo.data.ClassLabel;
 import cilabo.data.DataSet;
 import cilabo.data.InputVector;
 import cilabo.data.Pattern;
-import cilabo.utility.Input;
+import cilabo.labo.developing.fairness.FairnessPattern;
 
 public class InputTest {
 
@@ -68,6 +68,27 @@ public class InputTest {
 		}
 		// class label
 		assertEquals(expectedPattern.getTrueClass().getClassLabel(), actualPattern.getTrueClass().getClassLabel());
+	}
+
+	@Test
+	public void testInputFairnessDataSet() {
+		String sep = File.separator;
+		String fileName = "dataset" + sep + "german" + sep + "a0_0_german-10tra.dat";
+
+		DataSet dataset = new DataSet();
+		Input.inputFairnessDataSet(dataset, fileName);
+
+		int p = 0;
+		String expected = "0";
+		int actual = ((FairnessPattern)dataset.getPattern(p)).getA();
+		assertEquals(expected, String.valueOf(actual));
+
+		p = 1;
+		expected = "1";
+		actual = ((FairnessPattern)dataset.getPattern(p)).getA();
+		assertEquals(expected, String.valueOf(actual));
+
+
 	}
 
 	@Test

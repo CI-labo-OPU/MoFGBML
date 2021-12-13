@@ -1,9 +1,156 @@
 package cilabo.labo.developing.fairness;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.uma.jmetal.solution.Solution;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
+
+import cilabo.data.DataSet;
+import cilabo.fuzzy.classifier.operator.classification.Classification;
+import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
+import cilabo.fuzzy.knowledge.Knowledge;
+import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
+import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3_4_5;
+import cilabo.fuzzy.rule.antecedent.Antecedent;
+import cilabo.fuzzy.rule.antecedent.AntecedentFactory;
+import cilabo.fuzzy.rule.antecedent.factory.HeuristicRuleGenerationMethod;
+import cilabo.fuzzy.rule.consequent.Consequent;
+import cilabo.fuzzy.rule.consequent.ConsequentFactory;
+import cilabo.fuzzy.rule.consequent.factory.MoFGBML_Learning;
+import cilabo.gbml.objectivefunction.ObjectiveFunction;
+import cilabo.gbml.objectivefunction.impl.GmeanForPittsburgh;
+import cilabo.gbml.objectivefunction.impl.NumberOfRules;
+import cilabo.gbml.problem.AbstractPitssburghGBML_Problem;
+import cilabo.gbml.solution.MichiganSolution;
+import cilabo.gbml.solution.PittsburghSolution;
+import cilabo.main.Consts;
+import cilabo.metric.fairness.FalsePositiveRateDifference;
+import cilabo.utility.GeneralFunctions;
+import cilabo.utility.Random;
+
 /**
  * cilabo.gbml.problem.impl.pittsburgh.MOP1 を参考に作成
  *
  */
-public class MOP2_fairness {
+public class MOP2_fairness<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<S> {
+	// ************************************
+	private Knowledge knowledge;
+	private Classification classification;
+	private DataSet evaluationDataset;
+	private float[][] params = HomoTriangle_2_3_4_5.getParams();
 
+	// ************************************
+	public MOP2_fairness(DataSet train) {
+		this.evaluationDataset = train;
+		setNumberOfVariables(train.getNdim()*Consts.MAX_RULE_NUM);	// 可変だが、最大値で設定
+		setNumberOfObjectives(3);	// 3目的
+		setNumberOfConstraints(0);
+		setName("MOP2_maxGmean_and_minNrule_and_minFPRdiff");
+
+		// Fuzzy Initialization
+		this.knowledge = HomoTriangleKnowledgeFactory.builder()
+						.dimension(train.getNdim())
+						.params(params)
+						.build()
+						.create();
+		this.classification = new SingleWinnerRuleSelection();
+		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
+												.knowledge(knowledge)
+												.train(train)
+												.samplingIndex(new Integer[] {})
+												.build();
+		ConsequentFactory consequentFactory = MoFGBML_Learning.builder()
+												.train(train)
+												.build();
+		setAntecedentFactory(antecedentFactory);
+		setConsequentFactory(consequentFactory);
+
+		// Boundary
+		List<Integer> lowerLimit = new ArrayList<>(getNumberOfVariables());
+		List<Integer> upperLimit = new ArrayList<>(getNumberOfVariables());
+		for(int i = 0; i < getNumberOfVariables(); i++) {
+			lowerLimit.add(0);
+			upperLimit.add(params.length);
+		}
+		setVariableBounds(lowerLimit, upperLimit);
+	}
+
+	// ************************************
+	/* Getter */
+	public Knowledge getKnowledge() {
+		return this.knowledge;
+	}
+
+	public DataSet getEvaluationDataset() {
+		return this.evaluationDataset;
+	}
+
+	/* Setter */
+	public void setEvaluationDataset(DataSet evaluationDataset) {
+		this.evaluationDataset = evaluationDataset;
+	}
+
+	public void setClassification(Classification classification) {
+		this.classification = classification;
+	}
+
+	@Override
+	public PittsburghSolution createSolution() {
+		// Boundary
+		int dimension = evaluationDataset.getNdim();
+		List<Integer> lowerBounds = new ArrayList<>(dimension);
+		List<Integer> upperBounds = new ArrayList<>(dimension);
+		for(int i = 0; i < dimension; i++) {
+			lowerBounds.add(0);
+			upperBounds.add(params.length);
+		}
+		List<Pair<Integer, Integer>> michiganBounds =
+		        IntStream.range(0, lowerBounds.size())
+		            .mapToObj(i -> new ImmutablePair<>(lowerBounds.get(i), upperBounds.get(i)))
+		            .collect(Collectors.toList());
+		// Rules
+		Integer[] samplingIndex = GeneralFunctions.samplingWithout(evaluationDataset.getDataSize(), //box
+																	Consts.INITIATION_RULE_NUM,	//want
+																	Random.getInstance().getGEN());
+		((HeuristicRuleGenerationMethod)antecedentFactory).setSamplingIndex(samplingIndex);
+		List<IntegerSolution> michiganPopulation = new ArrayList<>();
+		for(int i = 0; i < Consts.INITIATION_RULE_NUM; i++) {
+			Antecedent antecedent = antecedentFactory.create();
+			Consequent consequent = consequentFactory.learning(antecedent);
+
+			MichiganSolution solution = new MichiganSolution(michiganBounds,
+															 1,	// Number of objectives for Michigan solution
+															 0,	// Number of constraints for Michigan solution
+															 antecedent, consequent);
+			michiganPopulation.add(solution);
+		}
+		PittsburghSolution solution = new PittsburghSolution(this.getBounds(),
+					this.getNumberOfObjectives(),
+					michiganPopulation,
+					classification);
+		return solution;
+	}
+
+	@Override
+	public void evaluate(IntegerSolution solution) {
+		/* The first objective */
+		ObjectiveFunction<PittsburghSolution, Double> function1 = new GmeanForPittsburgh(evaluationDataset);
+		double f1 = function1.function((PittsburghSolution)solution);
+		/* The second objective */
+		ObjectiveFunction<PittsburghSolution, Double> function2 = new NumberOfRules();
+		double f2 = function2.function((PittsburghSolution)solution);
+
+		/* The third objective */
+		FalsePositiveRateDifference function3 = new FalsePositiveRateDifference();
+		double f3 = function3.metric(((PittsburghSolution)solution).getClassifier(), evaluationDataset);
+
+		solution.setObjective(0, f1);
+		solution.setObjective(1, f2);
+		solution.setObjective(2, f3);
+	}
 }

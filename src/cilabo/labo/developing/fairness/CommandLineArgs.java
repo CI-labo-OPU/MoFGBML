@@ -20,11 +20,13 @@ public class CommandLineArgs extends AbstractArgs {
 	public static String trainFile;
 	/** 評価用データセット ファイル名 */
 	public static String testFile;
+	/** MOPインデックス **/
+	public static int mopIndex;
 
 	// ************************************************************
 	@Override
 	protected void load(String[] args) {
-		int n = 6;
+		int n = 7;
 		if(args.length < n) {
 			System.out.println("Need n=" + String.valueOf(n) + " arguments.");
 			System.out.println("---");
@@ -48,5 +50,6 @@ public class CommandLineArgs extends AbstractArgs {
 		trainFile = args[4];
 		testFile = args[5];
 
+		mopIndex = Integer.parseInt(args[6]);
 	}
 }
