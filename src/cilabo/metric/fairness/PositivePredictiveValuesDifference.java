@@ -3,6 +3,7 @@ package cilabo.metric.fairness;
 import cilabo.data.ClassLabel;
 import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.RuleBasedClassifier;
+import cilabo.fuzzy.rule.consequent.RejectedClassLabel;
 import cilabo.labo.developing.fairness.FairnessPattern;
 import cilabo.metric.Metric;
 
@@ -49,8 +50,9 @@ public class PositivePredictiveValuesDifference implements Metric {
 			// Classification
 			ClassLabel classifiedClass = classifier.classify(pattern.getInputVector()).getConsequent().getClassLabel();
 
-			// "y^ = 1"でなければ次のパターン
-			if(classifiedClass.getClassLabel() != 1) {
+			// "y^ = 1"でない or Rejected ならば 次のパターン
+			if( classifiedClass.getClass() == RejectedClassLabel.class ||
+				classifiedClass.getClassLabel() != 1 ) {
 				continue;
 			}
 
@@ -72,11 +74,22 @@ public class PositivePredictiveValuesDifference implements Metric {
 
 		double[] P_a = new double[2];
 		for(int i = 0; i < P_a.length; i++) {
-			P_a[i] = countForSensitive[i] / sizeForSensitive[i];
+			//TODO 分母が0にならないように処理（2で埋めて良いかは要検討）
+			if(sizeForSensitive[i] <= 0) {
+				if(countForSensitive[i] <= 0) {
+					P_a[i] = 1;
+				}
+				else {
+					P_a[i] = 2;
+				}
+			}
+			else {
+				P_a[i] = countForSensitive[i] / sizeForSensitive[i];
+			}
 		}
 
-		double FPR_diff = Math.abs(P_a[0] - P_a[1]);
-		return FPR_diff;
+		double PPV_diff = Math.abs(P_a[0] - P_a[1]);
+		return PPV_diff;
 	}
 
 }

@@ -144,7 +144,8 @@ public class MOP1_fairness<S extends Solution<?>> extends AbstractPitssburghGBML
 		ObjectiveFunction<PittsburghSolution, Double> function2 = new NumberOfRules();
 		double f2 = function2.function((PittsburghSolution)solution);
 
-		solution.setObjective(0, f1);
+		// Gmean is a maximization objective: multiply by -1 to minimize
+		solution.setObjective(0, -1.0*f1);
 		solution.setObjective(1, f2);
 	}
 
