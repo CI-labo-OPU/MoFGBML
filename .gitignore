@@ -1,10 +1,9 @@
-
 bin/
 copy/
 python/
 results/
 doc/
-target
+target/
 
 .DS_Store
 jMetal.log
