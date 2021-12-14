@@ -5,6 +5,7 @@ results/
 doc/
 target/
 
+RUNjar.ps1
 .DS_Store
 jMetal.log
 jMetal.log.1
