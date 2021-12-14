@@ -181,7 +181,4 @@ public class FAN2021_Main {
 
 		return;
 	}
-
-
-
 }
