@@ -42,7 +42,6 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	private Knowledge knowledge;
 	private Classification classification;
 	private DataSet evaluationDataset;
-//	private float[][] params = HomoTriangle_2_3_4_5.getParams();
 	private float[][] params;
 
 
