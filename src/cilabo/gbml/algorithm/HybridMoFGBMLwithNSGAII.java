@@ -178,7 +178,11 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 	    	if(evaluations % frequency == 0) {
 	    		String path = outputRootDir+sep+ "solutions-"+evaluations+".txt";
 	    		new PittsburghSolutionListOutput(getPopulation())
-	    			.printSolutionsToFile(new DefaultFileOutputContext(path), getPopulation());;
+	    			.printSolutionsToFile(new DefaultFileOutputContext(path), getPopulation());
+
+	    		path = outputRootDir+sep + "FUN-"+evaluations+".txt";
+	    		new PittsburghSolutionListOutput(getPopulation())
+	    			.printObjectivesToFile(new DefaultFileOutputContext(path), getPopulation());
 	    	}
 	    }
 		else {

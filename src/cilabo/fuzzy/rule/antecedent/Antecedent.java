@@ -2,6 +2,7 @@ package cilabo.fuzzy.rule.antecedent;
 
 import java.util.Arrays;
 
+import cilabo.fuzzy.knowledge.CategoricTerm;
 import cilabo.fuzzy.knowledge.Knowledge;
 import jfml.term.FuzzyTermType;
 
@@ -36,7 +37,8 @@ public class Antecedent {
 		for(int i = 0; i < antecedentIndex.length; i++) {
 			if(antecedentIndex[i] < 0) {
 				// Categorical
-				antecedentFuzzySets[i] = null;
+				String name = String.format("%2s", String.valueOf(antecedentIndex[i]));
+				antecedentFuzzySets[i] = new CategoricTerm(name, antecedentIndex[i]);
 			}
 			else {
 				// Numerical

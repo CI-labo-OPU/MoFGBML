@@ -149,7 +149,8 @@ public class MOP2_fairness<S extends Solution<?>> extends AbstractPitssburghGBML
 		FalsePositiveRateDifference function3 = new FalsePositiveRateDifference();
 		double f3 = function3.metric(((PittsburghSolution)solution).getClassifier(), evaluationDataset);
 
-		solution.setObjective(0, f1);
+		// Gmean is a maximization objective: multiply by -1 to minimize
+		solution.setObjective(0, -1.0*f1);
 		solution.setObjective(1, f2);
 		solution.setObjective(2, f3);
 	}

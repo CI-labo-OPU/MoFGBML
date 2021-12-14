@@ -4,7 +4,8 @@ copy/
 python/
 results/
 doc/
-dataset/german/
+dataset/adult/
+dataset/phoneme/
 
 .DS_Store
 jMetal.log

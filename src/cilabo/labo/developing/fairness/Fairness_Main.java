@@ -33,8 +33,11 @@ import cilabo.gbml.operator.mutation.PittsburghMutation;
 import cilabo.gbml.problem.AbstractPitssburghGBML_Problem;
 import cilabo.gbml.solution.PittsburghSolution;
 import cilabo.main.Consts;
-import cilabo.metric.ErrorRate;
+import cilabo.metric.Gmean;
 import cilabo.metric.Metric;
+import cilabo.metric.RuleNum;
+import cilabo.metric.fairness.FalsePositiveRateDifference;
+import cilabo.metric.fairness.PositivePredictiveValuesDifference;
 import cilabo.utility.Input;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
@@ -57,7 +60,7 @@ public class Fairness_Main {
 		System.out.println("main: " + Fairness_Main.class.getCanonicalName());
 		System.out.println("version: " + version);
 		System.out.println();
-		System.out.println("Algorithm: ???????");
+		System.out.println("Algorithm: Hybrid-style Multiobjective Fuzzy Genetics-Based Machine Learning for Fairness Datasets");
 		System.out.println("EMOA: NSGA-II");
 		System.out.println();
 		/* ********************************************************* */
@@ -99,13 +102,11 @@ public class Fairness_Main {
 		DataSet train = new DataSet();
 		DataSet test = new DataSet();
 		Input.inputFairnessDataSet(train, CommandLineArgs.trainFile);
-		Input.inputFairnessDataSet(test, CommandLineArgs.trainFile);
+		Input.inputFairnessDataSet(test, CommandLineArgs.testFile);
 		datasetManager.addTrains(train);
 		datasetManager.addTests(test);
 
 		/* Run MoFGBML algorithm =============== */
-		train = datasetManager.getTrains().get(0);
-		test = datasetManager.getTests().get(0);
 		fairnessMoFGBML(train, test);
 		/* ===================================== */
 
@@ -209,23 +210,43 @@ public class Fairness_Main {
 		return mop;
 	}
 
-	//TODO TODO TODO
 	public static void outputResults(List<IntegerSolution> nonDominatedSolutions, DataSet train, DataSet test) {
 		String sep = File.separator;
-
-		// Test data
 	    ArrayList<String> strs = new ArrayList<>();
-	    String str = "pop,test";
+	    String str = "";
+
+	    /* Functions */
+	    Metric gmean = new Gmean();
+	    Metric FPR = new FalsePositiveRateDifference();
+	    Metric PPV = new PositivePredictiveValuesDifference();
+	    Metric ruleNum = new RuleNum();
+
+	    /* Header */
+	    str = "pop";
+	    str += "," + "Gmean_Dtra" + "," + "Gmean_Dtst";
+	    str += "," + "FPR_Dtra" + "," + "FPR_Dtst";
+	    str += "," + "PPV_Dtra" + "," + "PPV_Dtst";
+	    str += "," + "ruleNum";
 	    strs.add(str);
 
-	    Metric metric = new ErrorRate();
 	    for(int i = 0; i < nonDominatedSolutions.size(); i++) {
 	    	IntegerSolution solution = nonDominatedSolutions.get(i);
 	    	Classifier classifier = ((PittsburghSolution)solution).getClassifier();
-	    	double errorRate = (double)metric.metric(classifier, test);
 
+	    	// pop
 	    	str = String.valueOf(i);
-	    	str += "," + errorRate;
+	    	// Gmean
+	    	str += "," + gmean.metric(classifier, train);
+	    	str += "," + gmean.metric(classifier, test);
+	    	// FPR
+	    	str += "," + FPR.metric(classifier, train);
+	    	str += "," + FPR.metric(classifier, test);
+	    	// PPV
+	    	str += "," + PPV.metric(classifier, train);
+	    	str += "," + PPV.metric(classifier, test);
+	    	// ruleNum
+	    	str += "," + ruleNum.metric(classifier);
+
 	    	strs.add(str);
 	    }
 	    String fileName = Consts.EXPERIMENT_ID_DIR + sep + "results.csv";

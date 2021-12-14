@@ -25,7 +25,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>cilabo.labo.developing.fan2021.FAN2021_Main</mainClass>
+              <mainClass>cilabo.labo.developing.fairness.Fairness_Main</mainClass>
               <classpathPrefix>dependency/</classpathPrefix>>
               <addClasspath>true</addClasspath>
               <addExtensions>true</addExtensions>
