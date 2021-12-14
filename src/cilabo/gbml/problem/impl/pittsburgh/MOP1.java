@@ -55,14 +55,14 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		setName("MOP1_minError_and_minNrule");
 
 		MakeParameter makeParameter = new MakeParameter();
-		makeParameter.makeHomePartition(new int[] {2, 3, 4, 5});
-		params = makeParameter.triangle();
+		makeParameter.makeHomePartition(Consts.PARTITION_NUM_LIST);
+		params = makeParameter.getParameter(Consts.FUZZY_TERM_SHAPE_NAME);
 
 //		 Initialization
 		this.knowledge = SingleTypeKnowledgeFactory.builder()
 				.dimension(train.getNdim())
 				.params(params)
-				.fuzzyTermShapeName("triangle")
+				.fuzzyTermShapeName(Consts.FUZZY_TERM_SHAPE_NAME)
 				.build()
 				.create();
 

@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 import cilabo.data.ClassLabel;
 import cilabo.data.DataSet;
+import cilabo.main.Consts;
 import cilabo.utility.Parallel;
 
 public class MakeParameter {
@@ -347,6 +348,29 @@ public class MakeParameter {
 		}
 		Collections.sort(partitions);	//Ascending Order
 		return partitions;
+	}
+
+	public float[][] getParameter(String fuzzyTermShapeName){
+		switch(fuzzyTermShapeName) {
+			case "gaussian":
+				return this.gaussian();
+
+			case "trapezoid":
+				return this.trapezoid();
+
+			case "interval":
+				return this.rectangle();
+
+			case "triangle":
+			default:
+				if(this.divisionType == 1) {
+					return this.triangle();
+				}else if(this.divisionType == 2){
+					return this.linerShape(Consts.FUZZY_GRADE);
+				}
+		}
+		return null;
+
 	}
 
 	/**
