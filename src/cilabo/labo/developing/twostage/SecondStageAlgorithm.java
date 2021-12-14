@@ -129,6 +129,5 @@ public class SecondStageAlgorithm<S extends Solution<?>> extends HybridMoFGBMLwi
 		}
 	}
 
-
 }
 

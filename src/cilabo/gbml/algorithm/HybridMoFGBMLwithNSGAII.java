@@ -325,5 +325,4 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 		this.totalComputingTime = totalComputingTime;
 		return this;
 	}
-
 }

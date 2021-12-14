@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.uma.jmetal.component.replacement.Replacement;
+import org.uma.jmetal.component.initialsolutioncreation.InitialSolutionsCreation;
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
 import org.uma.jmetal.operator.crossover.CrossoverOperator;
@@ -124,6 +125,65 @@ public class TwoStage_Main {
 	public static void twoStageMoFGBML(DataSet train, DataSet test) {
 		String sep = File.separator;
 
+
+		//TODO 仮置き
+		List<IntegerSolution> population = null;
+		int nowEvaluations = 0;
+
+		//TODO 1stステージの実装
+		/* ======================================= */
+		/* == 1st Stage                         == */
+		/* ======================================= */
+
+		/* ======================================= */
+
+
+		/* ======================================= */
+		/* == 2nd Stage                         == */
+		/* ======================================= */
+		HybridMoFGBMLwithNSGAII<IntegerSolution> secondAlgorithm = make2ndStageAlgorithm(train, test);
+
+		/* Set current population as the initial population for 2nd stage */
+		InitialSolutionsCreation<IntegerSolution> initialSolutionsCreationForSecond = new PopulationCopyCreation<>(population);
+		secondAlgorithm.setInitialSolutionsCreation(initialSolutionsCreationForSecond);
+
+		/* Set current number of evaluations */
+		secondAlgorithm.setEvaluations(nowEvaluations);
+
+		/* === GA RUN === */
+		secondAlgorithm.run();
+		/* ============== */
+		/* ======================================= */
+
+		/* Non-dominated solutions in final generation */
+		List<IntegerSolution> nonDominatedSolutions = secondAlgorithm.getResult();
+	    new SolutionListOutput(nonDominatedSolutions)
+        	.setVarFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"VAR.csv", ","))
+        	.setFunFileOutputContext(new DefaultFileOutputContext(Consts.EXPERIMENT_ID_DIR+sep+"FUN.csv", ","))
+        	.print();
+
+	    // Test data
+	    ArrayList<String> strs = new ArrayList<>();
+	    String str = "pop,test";
+	    strs.add(str);
+
+	    Metric metric = new ErrorRate();
+	    for(int i = 0; i < nonDominatedSolutions.size(); i++) {
+	    	IntegerSolution solution = nonDominatedSolutions.get(i);
+	    	Classifier classifier = ((PittsburghSolution)solution).getClassifier();
+	    	double errorRate = (double)metric.metric(classifier, test);
+
+	    	str = String.valueOf(i);
+	    	str += "," + errorRate;
+	    	strs.add(str);
+	    }
+	    String fileName = Consts.EXPERIMENT_ID_DIR + sep + "results.csv";
+	    Output.writeln(fileName, strs, false);
+
+		return;
+	}
+
+	public static HybridMoFGBMLwithNSGAII<IntegerSolution> make2ndStageAlgorithm(DataSet train, DataSet test) {
 		/* MOP: Multi-objective Optimization Problem */
 		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		problem.setClassification(new SingleWinnerRuleSelection());
