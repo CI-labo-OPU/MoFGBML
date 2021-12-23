@@ -50,25 +50,22 @@ public class PositivePredictiveValuesDifference implements Metric {
 			// Classification
 			ClassLabel classifiedClass = classifier.classify(pattern.getInputVector()).getConsequent().getClassLabel();
 
-			// "y^ = 1"でない or Rejected ならば 次のパターン
-			if( classifiedClass.getClass() == RejectedClassLabel.class ||
-				classifiedClass.getClassLabel() != 1 ) {
-				continue;
-			}
-
-			// "y = 0"でなければ次のパターン
-			if(trueClass.getClassLabel() != 0) {
+			// Rejected ならば 次のパターン
+			if(classifiedClass.getClass() == RejectedClassLabel.class) {
 				continue;
 			}
 
 			// Sensitive attribute value
 			int a = pattern.getA();
-			sizeForSensitive[a]++;
 
-
-			// "y^ = 1"を判定
+			//分母
 			if(classifiedClass.getClassLabel() == 1) {
-				countForSensitive[a]++;
+				sizeForSensitive[a]++;
+
+				//分子
+				if(trueClass.getClassLabel() == 1) {
+					countForSensitive[a]++;
+				}
 			}
 		}
 
