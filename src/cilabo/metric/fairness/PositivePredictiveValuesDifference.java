@@ -56,18 +56,13 @@ public class PositivePredictiveValuesDifference implements Metric {
 				continue;
 			}
 
-			// "y = 0"でなければ次のパターン
-			if(trueClass.getClassLabel() != 0) {
-				continue;
-			}
-
 			// Sensitive attribute value
 			int a = pattern.getA();
 			sizeForSensitive[a]++;
 
 
-			// "y^ = 1"を判定
-			if(classifiedClass.getClassLabel() == 1) {
+			// "y = 1"を判定
+			if(trueClass.getClassLabel() != 0) {
 				countForSensitive[a]++;
 			}
 		}
