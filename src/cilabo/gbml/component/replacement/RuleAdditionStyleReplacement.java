@@ -24,7 +24,7 @@ public class RuleAdditionStyleReplacement
 		// 最大ルール数を超えるかどうかを判定
 		int NumberOfReplacement = 0;
 		if( Consts.MAX_RULE_NUM < (currentList.size() + offspringList.size()) ) {
-			NumberOfReplacement = (offspringList.size() + offspringList.size()) - Consts.MAX_RULE_NUM;
+			NumberOfReplacement = (currentList.size() + offspringList.size()) - Consts.MAX_RULE_NUM;
 		}
 
 		// Replace rules from bottom of list.
