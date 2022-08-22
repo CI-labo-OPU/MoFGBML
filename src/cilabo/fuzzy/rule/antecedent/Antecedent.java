@@ -8,9 +8,9 @@ import jfml.term.FuzzyTermType;
 public class Antecedent {
 	// ************************************************************
 	// Fields
-	int[] antecedentIndex;
+	protected int[] antecedentIndex;
 
-	FuzzyTermType[] antecedentFuzzySets;
+	protected FuzzyTermType[] antecedentFuzzySets;
 
 	// ************************************************************
 	// Constructor
@@ -116,6 +116,25 @@ public class Antecedent {
 			}
 		}
 		return length;
+	}
+
+	public void setAntecedentFuzzySets(int dimension, FuzzyTermType antecedentFuzzySets) {
+		this.antecedentFuzzySets[dimension] = antecedentFuzzySets;
+	}
+
+	public void setAntecedentFuzzySets(int dimension, int antecedentIndex, Knowledge knowledge) {
+		if(antecedentIndex < 0) {
+			// Categorical
+			this.antecedentFuzzySets[dimension] = null;
+		}
+		else {
+			// Numerical
+			this.antecedentFuzzySets[dimension] = knowledge.getFuzzySet(dimension, antecedentIndex);
+		}
+	}
+
+	public void setAntecedentIndexAt(int dimension, int antecedentIndex) {
+		this.antecedentIndex[dimension] = antecedentIndex;
 	}
 
 	@Override

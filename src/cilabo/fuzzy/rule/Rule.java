@@ -1,5 +1,6 @@
 package cilabo.fuzzy.rule;
 
+import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.consequent.Consequent;
 
@@ -62,6 +63,18 @@ public class Rule implements InterfaceRule {
 		str += "If [" + this.antecedent.toString() + "] ";
 		str += "Then " + this.consequent.toString();
 		return str;
+	}
+
+	/**
+	 * antecedent内のFuzzySetsをindexを基に更新し直します．
+	 * 計算量が無駄に増えるのであんま使わない方が良い
+	 * @param knowledge
+	 */
+	public void refreshFuzzySets(Knowledge knowledge) {
+		int[] antecedentIndex = this.getAntecedent().getAntecedentIndex();
+		for(int i=0; i<antecedentIndex.length; i++) {
+			this.antecedent.setAntecedentFuzzySets(i, antecedentIndex[i], knowledge);
+		}
 	}
 
 	public static RuleBuilder builder() {
