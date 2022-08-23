@@ -2,9 +2,12 @@ package cilabo.labo.developing.fan2021;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.xml.transform.TransformerException;
 
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
@@ -35,6 +38,7 @@ import cilabo.metric.Metric;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
 import cilabo.utility.Random;
+import xml.XML_manager;
 
 /**
  * @version 1.0
@@ -76,6 +80,8 @@ public class FAN2021_Main {
 		for(int i = 0; i < args.length; i++) {
 			System.out.print(args[i] + " ");
 		}
+
+
 		System.out.println();
 		System.out.println("=====================");
 		System.out.println();
@@ -96,9 +102,21 @@ public class FAN2021_Main {
 		/* Run MoFGBML algorithm =============== */
 		DataSet train = datasetManager.getTrains().get(0);
 		DataSet test = datasetManager.getTests().get(0);
+
+
+		/** XML ファイル出力ようインスタンスの生成*/
+		XML_manager.getInstance();
+		XML_manager.getInstance().setDtst(test);
+
 		HybridStyleMoFGBML(train, test);
 		/* ===================================== */
 
+		try {
+			XML_manager.output(Consts.EXPERIMENT_ID_DIR);
+		} catch (TransformerException | IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		Date end = new Date();
 		System.out.println("END: " + end);
 		System.out.println("=====================");
@@ -133,6 +151,9 @@ public class FAN2021_Main {
 
 		/* Termination: Number of total evaluations */
 		Termination termination = new TerminationByEvaluations(Consts.terminateEvaluation);
+
+		//knowlwdge出力用
+		XML_manager.addElement(XML_manager.getRoot(), Knowledge.getInstace(). knowledgeToElement());
 
 		/* Algorithm: Hybrid-style MoFGBML with NSGA-II */
 		HybridMoFGBMLwithNSGAII<IntegerSolution> algorithm
