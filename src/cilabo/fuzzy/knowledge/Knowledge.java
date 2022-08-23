@@ -2,19 +2,35 @@ package cilabo.fuzzy.knowledge;
 
 import jfml.term.FuzzyTermType;
 
+
+/**
+ * singletoneに変更，アプリケーション内で唯一のインスタンスを持ちます．≒グローバル変数
+ * @author hirot
+ *
+ */
 public class Knowledge {
 	// ************************************************************
 	// Fields
+	private static Knowledge instace = new Knowledge();
 
 	/** */
-	FuzzyTermType[][] fuzzySets;
+	private FuzzyTermType[][] fuzzySets;
 
 	// ************************************************************
 	// Constructor
-	public Knowledge() {}
+	private Knowledge() {}
+
 
 	// ************************************************************
 	// Methods
+
+	public static Knowledge getInstace() {
+		return instace;
+	}
+
+	public FuzzyTermType getFuzzySet(int dimension, int H) {
+		return fuzzySets[dimension][H];
+	}
 
 	/**
 	 *
@@ -27,22 +43,19 @@ public class Knowledge {
 		return (double)fuzzySets[dimension][H].getMembershipValue((float)x);
 	}
 
-	public FuzzyTermType getFuzzySet(int dimension, int H) {
-		return this.fuzzySets[dimension][H];
-	}
 
 	/**
 	 *
 	 */
 	public int getDimension() {
-		return this.fuzzySets.length;
+		return fuzzySets.length;
 	}
 
 	/**
 	 *
 	 */
 	public int getFuzzySetNum(int dimension) {
-		return this.fuzzySets[dimension].length;
+		return fuzzySets[dimension].length;
 	}
 
 	/**

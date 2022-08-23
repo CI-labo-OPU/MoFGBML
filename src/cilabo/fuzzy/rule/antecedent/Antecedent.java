@@ -53,7 +53,7 @@ public class Antecedent {
 	 */
 	public Antecedent deepcopy() {
 		int[] antecedentIndex = Arrays.copyOf(this.antecedentIndex, this.antecedentIndex.length);
-		return new Antecedent(antecedentIndex, this.antecedentFuzzySets);
+		return new Antecedent(antecedentIndex, this.antecedentFuzzySets.clone());
 	}
 
 	/**
@@ -89,6 +89,7 @@ public class Antecedent {
 		return this.antecedentIndex[dimension];
 	}
 
+
 	/**
 	 *
 	 */
@@ -105,6 +106,9 @@ public class Antecedent {
 		return this.antecedentFuzzySets[index];
 	}
 
+	public FuzzyTermType[] getAntecedentFuzzySets() {
+		return this.antecedentFuzzySets;
+	}
 	/**
 	 *
 	 */
@@ -118,8 +122,8 @@ public class Antecedent {
 		return length;
 	}
 
-	public void setAntecedentFuzzySets(int dimension, FuzzyTermType antecedentFuzzySets) {
-		this.antecedentFuzzySets[dimension] = antecedentFuzzySets;
+	public void setAntecedentFuzzySets(int dimension, FuzzyTermType antecedentFuzzySet) {
+		this.antecedentFuzzySets[dimension] = antecedentFuzzySet;
 	}
 
 	public void setAntecedentFuzzySets(int dimension, int antecedentIndex, Knowledge knowledge) {

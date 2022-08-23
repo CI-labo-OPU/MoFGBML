@@ -9,9 +9,9 @@ public class Rule implements InterfaceRule {
 	// Fields
 
 	/** */
-	Antecedent antecedent;
+	protected Antecedent antecedent;
 	/** */
-	Consequent consequent;
+	protected Consequent consequent;
 
 	// ************************************************************
 	// Constructor
@@ -88,12 +88,12 @@ public class Rule implements InterfaceRule {
 		RuleBuilder() {}
 
 		public Rule.RuleBuilder antecedent(Antecedent antecedent) {
-			this.antecedent = antecedent;
+			this.antecedent = antecedent.deepcopy();
 			return this;
 		}
 
 		public Rule.RuleBuilder consequent(Consequent consequent) {
-			this.consequent = consequent;
+			this.consequent = consequent.deepcopy();
 			return this;
 		}
 
