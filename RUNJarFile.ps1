@@ -1,4 +1,4 @@
-$dataName = "iris"
+$dataName = "bupa"
 $parallelCores = 12
 $algorithmID = "test"
 $experimentID = "trial"
