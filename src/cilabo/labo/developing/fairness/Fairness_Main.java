@@ -1,13 +1,10 @@
-package cilabo.labo.developing.fan2021;
+package cilabo.labo.developing.fairness;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.transform.TransformerException;
 
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
@@ -24,7 +21,6 @@ import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
 import cilabo.fuzzy.classifier.Classifier;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
-import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
@@ -38,14 +34,14 @@ import cilabo.metric.Metric;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
 import cilabo.utility.Random;
-import xml.XML_manager;
 
 /**
  * @version 1.0
  *
- * FAN2021時点
+ * 2021, November
+ *
  */
-public class FAN2021_Main {
+public class Fairness_Main {
 	public static void main(String[] args) throws JMetalException, FileNotFoundException {
 		String sep = File.separator;
 
@@ -53,10 +49,10 @@ public class FAN2021_Main {
 		System.out.println();
 		System.out.println("==== INFORMATION ====");
 		String version = "1.0";
-		System.out.println("main: " + FAN2021_Main.class.getCanonicalName());
+		System.out.println("main: " + Fairness_Main.class.getCanonicalName());
 		System.out.println("version: " + version);
 		System.out.println();
-		System.out.println("Algorithm: Hybrid-style Multiobjective Fuzzy Genetics-Based Machine Learning");
+		System.out.println("Algorithm: ???????");
 		System.out.println("EMOA: NSGA-II");
 		System.out.println();
 		/* ********************************************************* */
@@ -80,8 +76,6 @@ public class FAN2021_Main {
 		for(int i = 0; i < args.length; i++) {
 			System.out.print(args[i] + " ");
 		}
-
-
 		System.out.println();
 		System.out.println("=====================");
 		System.out.println();
@@ -96,27 +90,20 @@ public class FAN2021_Main {
 		JMetalRandom.getInstance().setSeed(Consts.RAND_SEED);
 
 		/* Load Dataset ======================== */
+
+		/* ここから -> ************************************************* */
+		/* TODO
+		 * 公平性データを読み込むように変更 */
 		TrainTestDatasetManager datasetManager = new TrainTestDatasetManager();
 		datasetManager.loadTrainTestFiles(CommandLineArgs.trainFile, CommandLineArgs.testFile);
+		/* ここまで <- ********************************************************* */
 
 		/* Run MoFGBML algorithm =============== */
 		DataSet train = datasetManager.getTrains().get(0);
 		DataSet test = datasetManager.getTests().get(0);
-
-
-		/** XML ファイル出力ようインスタンスの生成*/
-		XML_manager.getInstance();
-		XML_manager.getInstance().setDtst(test);
-
-		HybridStyleMoFGBML(train, test);
+		fairnessMoFGBML(train, test);
 		/* ===================================== */
 
-		try {
-			XML_manager.output(Consts.EXPERIMENT_ID_DIR);
-		} catch (TransformerException | IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
 		Date end = new Date();
 		System.out.println("END: " + end);
 		System.out.println("=====================");
@@ -128,32 +115,33 @@ public class FAN2021_Main {
 	/**
 	 *
 	 */
-	public static void HybridStyleMoFGBML(DataSet train, DataSet test) {
+	public static void fairnessMoFGBML(DataSet train, DataSet test) {
 		String sep = File.separator;
 
+		/* ここから -> ************************************************* */
+		/* TODO
+		 * 公平性に関するMOPにする */
 		/* MOP: Multi-objective Optimization Problem */
 		MOP1<IntegerSolution> problem = new MOP1<>(train);
 		problem.setClassification(new SingleWinnerRuleSelection());
+		/* ここまで <- ********************************************************* */
 
 		/* Crossover: Hybrid-style GBML specific crossover operator. */
 		double crossoverProbability = 1.0;
 		/* Michigan operation */
 		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-																			Knowledge.getInstace(),
-																			problem.getConsequentFactory());
+																			 problem.getKnowledge(),
+																			 problem.getConsequentFactory());
 		/* Pittsburgh operation */
 		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
 		/* Hybrid-style crossover */
 		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
 																				michiganX, pittsburghX);
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
-		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(Knowledge.getInstace(), train);
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
 
 		/* Termination: Number of total evaluations */
 		Termination termination = new TerminationByEvaluations(Consts.terminateEvaluation);
-
-		//knowlwdge出力用
-		XML_manager.addElement(XML_manager.getRoot(), Knowledge.getInstace(). knowledgeToElement());
 
 		/* Algorithm: Hybrid-style MoFGBML with NSGA-II */
 		HybridMoFGBMLwithNSGAII<IntegerSolution> algorithm
@@ -203,4 +191,7 @@ public class FAN2021_Main {
 
 		return;
 	}
+
+
+
 }
