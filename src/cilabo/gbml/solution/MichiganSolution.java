@@ -45,7 +45,7 @@ public class MichiganSolution extends DefaultIntegerSolution implements IntegerS
 		for(int i = 0; i < rule.getAntecedent().getDimension(); i++) {
 			this.setVariable(i, rule.getAntecedent().getAntecedentIndexAt(i));
 		}
-		this.rule = rule;
+		this.rule = rule.deepcopy();
 	}
 
 	public MichiganSolution(MichiganSolution solution) {
@@ -95,15 +95,31 @@ public class MichiganSolution extends DefaultIntegerSolution implements IntegerS
 				.build();
 	}
 
+
+
 	/**
 	 *
 	 */
 	public Rule getRule() {
-		return this.rule;
+		return this.rule.deepcopy();
 	}
 
 	public List<Pair<Integer, Integer>> getBounds() {
 		return this.bounds;
+	}
+
+	@Override
+	/**
+	 * setVariable(int index, Integer value, Knowledge knowledge)に移行予定
+	 */
+	public void setVariable(int index, Integer value) {
+		// TODO 自動生成されたメソッド・スタブ
+//		System.out.println("using a wrong \"setVariable\" function.");
+		if(this.rule != null) {
+			this.rule.getAntecedent().setAntecedentIndexAt(index, value);
+			this.rule.getAntecedent().setAntecedentFuzzySets(index, value, Knowledge.getInstace());
+		}
+		super.setVariable(index, value);
 	}
 
 	/**

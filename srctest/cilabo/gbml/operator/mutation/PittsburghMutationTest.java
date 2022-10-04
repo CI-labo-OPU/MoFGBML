@@ -10,6 +10,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
+import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.utility.Input;
 
@@ -34,7 +35,7 @@ public class PittsburghMutationTest {
 		String beforeString = solution.toString();
 //		System.out.println(beforeString);
 
-		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(Knowledge.getInstace(), train);
 		mutation.execute(solution);
 
 		String afterString = solution.toString();

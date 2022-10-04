@@ -52,6 +52,12 @@ public class Consts {
 	public static int MAX_RULE_NUM = 60;
 	/** 1識別器あたりの最小ルール数 */
 	public static int MIN_RULE_NUM = 1;
+	/** ファジィセットの形状*/
+	public static String FUZZY_TERM_SHAPE_NAME = "triangle";
+	/** ファジィ度*/
+	public static double FUZZY_GRADE = 1f;
+	/** 分割数の配列*/
+	public static int[] PARTITION_NUM_LIST  = {2, 3, 4, 5};
 
 	//FGBML ************************************
 	/** Michigan適用確率 */
@@ -89,6 +95,7 @@ public class Consts {
 	public static String TIMES = "times";
 
 
+	public static final String XML_FILE_NAME = "rersults_XML";
 	/******************************************/
 
 	public static void set(String source) {
@@ -107,7 +114,6 @@ public class Consts {
 		if(bundle.containsKey("terminateGeneration")) { terminateGeneration = Integer.parseInt(bundle.getString("terminateGeneration")); }
 		if(bundle.containsKey("terminateEvaluation")) { terminateEvaluation = Integer.parseInt(bundle.getString("terminateEvaluation")); }
 		if(bundle.containsKey("outputFrequency")) { outputFrequency = Integer.parseInt(bundle.getString("outputFrequency")); }
-
 		if(bundle.containsKey("RAND_SEED")) { RAND_SEED = Integer.parseInt(bundle.getString("RAND_SEED")); }
 		if(bundle.containsKey("WINDOWS")) { WINDOWS = Integer.parseInt(bundle.getString("WINDOWS")); }
 		if(bundle.containsKey("UNIX")) { UNIX = Integer.parseInt(bundle.getString("UNIX")); }
@@ -117,6 +123,15 @@ public class Consts {
 		if(bundle.containsKey("INITIATION_RULE_NUM")) { INITIATION_RULE_NUM = Integer.parseInt(bundle.getString("INITIATION_RULE_NUM")); }
 		if(bundle.containsKey("MAX_RULE_NUM")) { MAX_RULE_NUM = Integer.parseInt(bundle.getString("MAX_RULE_NUM")); }
 		if(bundle.containsKey("MIN_RULE_NUM")) { MIN_RULE_NUM = Integer.parseInt(bundle.getString("MIN_RULE_NUM")); }
+		if(bundle.containsKey("FUZZY_TERM_SHAPE_NAME")) { FUZZY_TERM_SHAPE_NAME = bundle.getString("FUZZY_TERM_SHAPE_NAME"); }
+		if(bundle.containsKey("FUZZY_GRADE")) { FUZZY_GRADE = Double.parseDouble(bundle.getString("FUZZY_GRADE")); }
+		if(bundle.containsKey("PARTITION_NUM_LIST")) {
+			int PARTITION_NUM_LIST_LENGTH = bundle.getString("PARTITION_NUM_LIST").split(",").length;
+			PARTITION_NUM_LIST = new int[PARTITION_NUM_LIST_LENGTH];
+			for(int i = 0; i < PARTITION_NUM_LIST_LENGTH; i++) {
+				PARTITION_NUM_LIST[i] = Integer.parseInt( bundle.getString("PARTITION_NUM_LIST").split(",")[i] );
+			}
+		}
 		if(bundle.containsKey("MICHIGAN_OPE_RT")) { MICHIGAN_OPE_RT = Double.parseDouble(bundle.getString("MICHIGAN_OPE_RT")); }
 		if(bundle.containsKey("RULE_CHANGE_RT")) { RULE_CHANGE_RT = Double.parseDouble(bundle.getString("RULE_CHANGE_RT")); }
 		if(bundle.containsKey("MICHIGAN_CROSS_RT")) { MICHIGAN_CROSS_RT = Double.parseDouble(bundle.getString("MICHIGAN_CROSS_RT")); }

@@ -2,9 +2,12 @@ package cilabo.labo.developing.fan2021;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.xml.transform.TransformerException;
 
 import org.uma.jmetal.component.termination.Termination;
 import org.uma.jmetal.component.termination.impl.TerminationByEvaluations;
@@ -21,6 +24,7 @@ import cilabo.data.DataSet;
 import cilabo.data.impl.TrainTestDatasetManager;
 import cilabo.fuzzy.classifier.Classifier;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
+import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.gbml.algorithm.HybridMoFGBMLwithNSGAII;
 import cilabo.gbml.operator.crossover.HybridGBMLcrossover;
 import cilabo.gbml.operator.crossover.MichiganOperation;
@@ -34,6 +38,7 @@ import cilabo.metric.Metric;
 import cilabo.utility.Output;
 import cilabo.utility.Parallel;
 import cilabo.utility.Random;
+import xml.XML_manager;
 
 /**
  * @version 1.0
@@ -75,6 +80,8 @@ public class FAN2021_Main {
 		for(int i = 0; i < args.length; i++) {
 			System.out.print(args[i] + " ");
 		}
+
+
 		System.out.println();
 		System.out.println("=====================");
 		System.out.println();
@@ -95,9 +102,21 @@ public class FAN2021_Main {
 		/* Run MoFGBML algorithm =============== */
 		DataSet train = datasetManager.getTrains().get(0);
 		DataSet test = datasetManager.getTests().get(0);
+
+
+		/** XML ファイル出力ようインスタンスの生成*/
+		XML_manager.getInstance();
+		XML_manager.getInstance().setDtst(test);
+
 		HybridStyleMoFGBML(train, test);
 		/* ===================================== */
 
+		try {
+			XML_manager.output(Consts.EXPERIMENT_ID_DIR);
+		} catch (TransformerException | IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		Date end = new Date();
 		System.out.println("END: " + end);
 		System.out.println("=====================");
@@ -120,18 +139,21 @@ public class FAN2021_Main {
 		double crossoverProbability = 1.0;
 		/* Michigan operation */
 		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-																			 problem.getKnowledge(),
-																			 problem.getConsequentFactory());
+																			Knowledge.getInstace(),
+																			problem.getConsequentFactory());
 		/* Pittsburgh operation */
 		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
 		/* Hybrid-style crossover */
 		CrossoverOperator<IntegerSolution> crossover = new HybridGBMLcrossover(crossoverProbability, Consts.MICHIGAN_OPE_RT,
 																				michiganX, pittsburghX);
 		/* Mutation: Pittsburgh-style GBML specific mutation operator. */
-		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(problem.getKnowledge(), train);
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(Knowledge.getInstace(), train);
 
 		/* Termination: Number of total evaluations */
 		Termination termination = new TerminationByEvaluations(Consts.terminateEvaluation);
+
+		//knowlwdge出力用
+		XML_manager.addElement(XML_manager.getRoot(), Knowledge.getInstace(). knowledgeToElement());
 
 		/* Algorithm: Hybrid-style MoFGBML with NSGA-II */
 		HybridMoFGBMLwithNSGAII<IntegerSolution> algorithm
@@ -181,7 +203,4 @@ public class FAN2021_Main {
 
 		return;
 	}
-
-
-
 }

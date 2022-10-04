@@ -16,14 +16,14 @@ public class AntecedentTest {
 		int dimension = 3;
 		float[][] params = HomoTriangle_3_4_5.getParams();
 
-		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
 								.create();
 
 		Antecedent antecedent = Antecedent.builder()
-								.knowledge(knowledge)
+								.knowledge(Knowledge.getInstace())
 								.antecedentIndex(antecedentIndex)
 								.build();
 
@@ -37,7 +37,7 @@ public class AntecedentTest {
 	@Test
 	public void testCategorical() {
 		int dimension = 3;
-		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(HomoTriangle_2_3_4_5.getParams())
 								.build()
@@ -45,7 +45,7 @@ public class AntecedentTest {
 
 		int[] antecedentIndex = new int[] {-1, 0, -2};
 		Antecedent antecedent = Antecedent.builder()
-									.knowledge(knowledge)
+									.knowledge(Knowledge.getInstace())
 									.antecedentIndex(antecedentIndex)
 									.build();
 
