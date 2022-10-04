@@ -21,10 +21,13 @@ public class CommandLineArgs extends AbstractArgs {
 	/** 評価用データセット ファイル名 */
 	public static String testFile;
 
+	/** ステージ切り替え評価回数 */
+	public static int changeStageSetting;
+
 	// ************************************************************
 	@Override
 	protected void load(String[] args) {
-		int n = 6;
+		int n = 7;
 		if(args.length < n) {
 			System.out.println("Need n=" + String.valueOf(n) + " arguments.");
 			System.out.println("---");
@@ -47,6 +50,8 @@ public class CommandLineArgs extends AbstractArgs {
 
 		trainFile = args[4];
 		testFile = args[5];
+
+		changeStageSetting = Integer.parseInt(args[6]);
 
 	}
 }

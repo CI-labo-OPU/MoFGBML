@@ -15,6 +15,7 @@ import cilabo.fuzzy.rule.consequent.Consequent;
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.gbml.solution.MichiganSolution;
 import cilabo.gbml.solution.PittsburghSolution;
+import cilabo.main.Consts;
 
 public class CrossoverAndMutationAndPittsburghLearningVariation<S extends Solution<?>>
 			implements Variation<S>
@@ -52,28 +53,39 @@ public class CrossoverAndMutationAndPittsburghLearningVariation<S extends Soluti
 		checkNumberOfParents(matingPopulation, numberOfParents);
 
 		List<S> offspringPopulation = new ArrayList<>(offspringPopulationSize);
+		int count = 0;//TODO
 		for(int i = 0; i < matingPoolSize; i+= numberOfParents) {
 			List<S> parents = new ArrayList<>(numberOfParents);
 			for(int j = 0; j < numberOfParents; j++) {
 				parents.add(matingPopulation.get(i + j));
 			}
-
+			count++;
 			/* Crossover */
 			List<S> offspring = crossover.execute(parents);
-
 			for(S solution : offspring) {
 				/* Mutation */
 				mutation.execute(solution);
 				/* Learning */
-				List<IntegerSolution> michiganPopulation = ((PittsburghSolution)solution).getMichiganPopulation();
+				int ruleNum = ((PittsburghSolution)solution).getMichiganPopulation().size();
+				int Ndim = ((PittsburghSolution)solution).getMichiganPopulation().get(0).getNumberOfVariables();
+
 				List<IntegerSolution> newMichiganPopulation = new ArrayList<>();
-				for(int j = 0; j < michiganPopulation.size(); j++) {
-					Antecedent antecedent = ((MichiganSolution)michiganPopulation.get(j)).getRule().getAntecedent().deepcopy();
+				int head = 0;
+				for(int j = 0; j < ruleNum; j++) {
+					int[] antecedentIndex = new int[Ndim];
+					for(int n = 0; n < Ndim; n++) {
+						antecedentIndex[n] = (Integer)solution.getVariable(head);
+						head++;
+					}
+					Antecedent antecedent = Antecedent.builder()
+											.antecedentIndex(antecedentIndex)
+											.knowledge(Consts.knowledge)
+											.build();
 					Consequent consequent = consequentFactory.learning(antecedent);
 					newMichiganPopulation.add(new MichiganSolution(
-							((MichiganSolution)michiganPopulation.get(j)).getBounds(),
-							((MichiganSolution)michiganPopulation.get(j)).getNumberOfObjectives(),
-							((MichiganSolution)michiganPopulation.get(j)).getNumberOfConstraints(),
+							((MichiganSolution)((PittsburghSolution)solution).getMichiganPopulation().get(j)).getBounds(),
+							((MichiganSolution)((PittsburghSolution)solution).getMichiganPopulation().get(j)).getNumberOfObjectives(),
+							((MichiganSolution)((PittsburghSolution)solution).getMichiganPopulation().get(j)).getNumberOfConstraints(),
 							antecedent, consequent));
 				}
 				((PittsburghSolution)solution).setMichiganPopulation(newMichiganPopulation);

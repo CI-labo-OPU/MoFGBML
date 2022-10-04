@@ -129,6 +129,19 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 			michiganPopulation.add(solution);
 		}
 
+//		// Boundary
+//		int numberOfVariables = michiganPopulation.size()*evaluationDataset.getNdim();
+//		List<Integer> lowerLimit = new ArrayList<>(numberOfVariables);
+//		List<Integer> upperLimit = new ArrayList<>(numberOfVariables);
+//		for(int i = 0; i < numberOfVariables; i++) {
+//			lowerLimit.add(0);
+//			upperLimit.add(params.length);
+//		}
+//		List<Pair<Integer, Integer>> bounds =
+//		        IntStream.range(0, lowerLimit.size())
+//		            .mapToObj(i -> new ImmutablePair<>(lowerLimit.get(i), upperLimit.get(i)))
+//		            .collect(Collectors.toList());
+
 		PittsburghSolution solution = new PittsburghSolution(this.getBounds(),
 								 							this.getNumberOfObjectives(),
 								 							michiganPopulation,

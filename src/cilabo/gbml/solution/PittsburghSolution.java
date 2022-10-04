@@ -79,7 +79,7 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 	public void setMichiganPopulation(List<IntegerSolution> solutions) {
 		// Clear this.variables
 		for(int i = 0; i < getNumberOfVariables(); i++) {
-			setVariable(i, 0);
+			setVariable(i, null);
 		}
 
 		// Eliminate duplicate solutions
@@ -122,6 +122,28 @@ public class PittsburghSolution extends DefaultIntegerSolution implements Intege
 
 	public Classification getClassification() {
 		return this.classification;
+	}
+
+	@Override
+	public String toString() {
+		String result = "Variables: ";
+		for (Integer var : getVariables()) {
+			if(var != null) {
+				result += "" + var + " ";
+			}
+		}
+		result += "Objectives: ";
+		for (Double obj : getObjectives()) {
+			result += "" + obj + " ";
+		}
+		result += "Constraints: ";
+		for (Double obj : getConstraints()) {
+			result += "" + obj + " ";
+		}
+		result += "\t";
+		result += "AlgorithmAttributes: " + attributes + "\n";
+
+		return result;
 	}
 
 }

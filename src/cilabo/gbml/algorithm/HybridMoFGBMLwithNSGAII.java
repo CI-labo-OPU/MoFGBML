@@ -250,12 +250,28 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 		return observable;
 	}
 
+	public long getStartTime() {
+		return this.startTime;
+	}
+
 	public long getTotalComputingTime() {
 		return totalComputingTime;
 	}
 
-	public long getEvaluations() {
+	public int getEvaluations() {
 		return evaluations;
+	}
+
+	public int getOffspringPopulationSize() {
+		return this.offspringPopulationSize;
+	}
+
+	public int getFrequency() {
+		return this.frequency;
+	}
+
+	public String getOutputRootDir() {
+		return this.outputRootDir;
 	}
 
 	/* Setter */
@@ -301,6 +317,21 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 
 	public HybridMoFGBMLwithNSGAII<S> setSelection(MatingPoolSelection<S> selection) {
 		this.selection = selection;
+		return this;
+	}
+
+	public HybridMoFGBMLwithNSGAII<S> setEvaluations(int evaluations) {
+		this.evaluations = evaluations;
+		return this;
+	}
+
+	public HybridMoFGBMLwithNSGAII<S> setStartTime(int startTime) {
+		this.startTime = startTime;
+		return this;
+	}
+
+	public HybridMoFGBMLwithNSGAII<S> setTotalComputingTime(long totalComputingTime) {
+		this.totalComputingTime = totalComputingTime;
 		return this;
 	}
 

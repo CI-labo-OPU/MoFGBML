@@ -227,11 +227,14 @@ public class MichiganOperation implements CrossoverOperator<IntegerSolution> {
 		currentList = replacement.replace(currentList, generatedMichiganSolution);
 
 		/* Pittsburgh solution */
-		IntegerSolution child = parent.copy();
 		// Radix sort Michigan solution list
 		SortMichiganPopulation.radixSort(currentList);
-		/* Set variables */
-		((PittsburghSolution)child).setMichiganPopulation(currentList);
+
+		PittsburghSolution child = new PittsburghSolution(
+										parent.getBounds(),
+										parent.getNumberOfObjectives(),
+										currentList,
+										parent.getClassification());
 
 		List<IntegerSolution> offspring = new ArrayList<>();
 		offspring.add(child);

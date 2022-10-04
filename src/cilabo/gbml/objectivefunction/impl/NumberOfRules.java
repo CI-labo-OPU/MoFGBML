@@ -32,6 +32,7 @@ public class NumberOfRules implements ObjectiveFunction<PittsburghSolution, Doub
 		if(newMichiganPopulation.size() > 0) { solution.setMichiganPopulation(newMichiganPopulation);}
 		else {System.out.println("there is no rule in newMichiganPopulation.");}
 		double numberOfRules = solution.getMichiganPopulation().size();
+
 		return numberOfRules;
 	}
 }
