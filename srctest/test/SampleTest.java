@@ -1,18 +1,17 @@
 package test;
 
-import static org.junit.Assert.*;
+import java.io.FileNotFoundException;
 
 import org.junit.Test;
+import org.uma.jmetal.util.JMetalException;
 
 public class SampleTest {
 
 
 	@Test
-	public void testSum() {
-		int a = 3;
-		int b = 4;
-		int c = a+b;
-		assertEquals(c, Sample.sum(a,  b));
+	public void test() throws JMetalException, FileNotFoundException {
+		String[] args = {"iris", "test", "trial00", "12", "dataset\\iris\\a0_0_iris-10tra.dat", "dataset\\iris\\a0_0_iris-10tst.dat"};
+//		FAN2021_Main.main(args);
 	}
 
 }

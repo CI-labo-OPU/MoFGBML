@@ -39,7 +39,6 @@ import cilabo.utility.Random;
  */
 public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<S> {
 	// ************************************
-	private Knowledge knowledge;
 	private Classification classification;
 	private DataSet evaluationDataset;
 	private float[][] params;
@@ -54,12 +53,8 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		setNumberOfConstraints(0);
 		setName("MOP1_minError_and_minNrule");
 
-		MakeParameter makeParameter = new MakeParameter();
-		makeParameter.makeHomePartition(Consts.PARTITION_NUM_LIST);
-		params = makeParameter.getParameter(Consts.FUZZY_TERM_SHAPE_NAME);
-
-//		 Initialization
-		this.knowledge = SingleTypeKnowledgeFactory.builder()
+		// Initialization
+		HomoTriangleKnowledgeFactory.builder()
 				.dimension(train.getNdim())
 				.params(params)
 				.fuzzyTermShapeName(Consts.FUZZY_TERM_SHAPE_NAME)
@@ -67,7 +62,7 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 				.create();
 
 		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
-										.knowledge(knowledge)
+										.knowledge(Knowledge.getInstace())
 										.train(train)
 										.samplingIndex(new Integer[] {})
 										.build();
@@ -88,11 +83,6 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	}
 
 	// ************************************
-
-	/* Getter */
-	public Knowledge getKnowledge() {
-		return this.knowledge;
-	}
 
 	public DataSet getEvaluationDataset() {
 		return this.evaluationDataset;

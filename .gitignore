@@ -3,7 +3,7 @@ copy/
 python/
 results/
 doc/
-target/
+dataset/
 
 RUNjar.ps1
 .DS_Store

@@ -33,10 +33,12 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import org.uma.jmetal.util.observable.Observable;
 import org.uma.jmetal.util.observable.ObservableEntity;
 import org.uma.jmetal.util.observable.impl.DefaultObservable;
+import org.w3c.dom.Element;
 
 import cilabo.fuzzy.rule.consequent.ConsequentFactory;
 import cilabo.gbml.component.variation.CrossoverAndMutationAndPittsburghLearningVariation;
 import cilabo.util.fileoutput.PittsburghSolutionListOutput;
+import xml.XML_manager;
 
 public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvolutionaryAlgorithm<S, List<S>>
 										implements ObservableEntity {
@@ -178,7 +180,14 @@ public class HybridMoFGBMLwithNSGAII<S extends Solution<?>> extends AbstractEvol
 	    	if(evaluations % frequency == 0) {
 	    		String path = outputRootDir+sep+ "solutions-"+evaluations+".txt";
 	    		new PittsburghSolutionListOutput(getPopulation())
-	    			.printSolutionsToFile(new DefaultFileOutputContext(path), getPopulation());;
+	    			.printSolutionsToFile(new DefaultFileOutputContext(path), getPopulation());
+
+	    		Element population = new PittsburghSolutionListOutput(getPopulation())
+		    			.printSolutionsToElement(getPopulation());
+
+		    	XML_manager xml_manager = XML_manager.getInstance();
+		    	XML_manager.addElement(XML_manager.getRoot(), population,
+		    			xml_manager.generationName, String.valueOf(evaluations));
 	    	}
 	    }
 		else {

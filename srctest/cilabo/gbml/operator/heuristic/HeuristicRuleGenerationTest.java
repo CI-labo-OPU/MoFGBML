@@ -21,14 +21,14 @@ public class HeuristicRuleGenerationTest {
 		Input.inputSingleLabelDataSet(train, traFile);
 
 		float[][] params = HomoTriangle_2_3_4_5.getParams();
-		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 								.dimension(train.getNdim())
 								.params(params)
 								.build()
 								.create();
 
 
-		HeuristicRuleGeneration generator = new HeuristicRuleGeneration(knowledge);
+		HeuristicRuleGeneration generator = new HeuristicRuleGeneration(Knowledge.getInstace());
 
 		// TEST
 		Random.getInstance().getGEN().setSeed(0);
