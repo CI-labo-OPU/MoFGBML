@@ -19,14 +19,14 @@ public class FuzzyRuleTest {
 		int dimension = 3;
 		float[][] params = HomoTriangle_3_4_5.getParams();
 
-		HomoTriangleKnowledgeFactory.builder()
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
 								.create();
 
 		Antecedent antecedent = Antecedent.builder()
-								.knowledge(Knowledge.getInstace())
+								.knowledge(knowledge)
 								.antecedentIndex(antecedentIndex)
 								.build();
 

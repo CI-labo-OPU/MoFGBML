@@ -103,12 +103,12 @@ public class Test {
 
 		int dimension = train.getNdim();
 		float[][] params = HomoTriangle_3.getParams();
-		HomoTriangleKnowledgeFactory.builder()
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
 								.create();
-		return Knowledge.getInstace();
+		return knowledge;
 	}
 
 	private static RuleBasedClassifier makeTestClassifier() {
@@ -119,7 +119,7 @@ public class Test {
 
 		int dimension = train.getNdim();
 		float[][] params = HomoTriangle_3.getParams();
-		HomoTriangleKnowledgeFactory.builder()
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
@@ -128,7 +128,7 @@ public class Test {
 		PreProcessing preProcessing = new NopPreProcessing();
 
 		AntecedentFactory antecedentFactory = AllCombinationAntecedentFactory.builder()
-												.knowledge(Knowledge.getInstace())
+												.knowledge(knowledge)
 												.build();
 		int ruleNum = ((AllCombinationAntecedentFactory)antecedentFactory).getRuleNum();
 

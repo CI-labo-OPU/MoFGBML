@@ -23,7 +23,7 @@ public class HeuristicRuleGenerationMethodTest {
 
 		int dimension = train.getNdim();
 		float[][] params = HomoTriangle_2_3_4_5.getParams();
-		HomoTriangleKnowledgeFactory.builder()
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
@@ -32,7 +32,7 @@ public class HeuristicRuleGenerationMethodTest {
 
 		Integer[] samplingIndex = new Integer[] {0, 1};
 		HeuristicRuleGenerationMethod factory = HeuristicRuleGenerationMethod.builder()
-												.knowledge(Knowledge.getInstace())
+												.knowledge(knowledge)
 												.train(train)
 												.samplingIndex(samplingIndex)
 												.build();

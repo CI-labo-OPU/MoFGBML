@@ -13,8 +13,8 @@ import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.knowledge.Knowledge;
-import cilabo.fuzzy.knowledge.factory.SingleTypeKnowledgeFactory;
-import cilabo.fuzzy.knowledge.membershipParams.MakeParameter;
+import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
+import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3_4_5;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
 import cilabo.fuzzy.rule.antecedent.AntecedentFactory;
 import cilabo.fuzzy.rule.antecedent.factory.HeuristicRuleGenerationMethod;
@@ -39,9 +39,10 @@ import cilabo.utility.Random;
  */
 public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<S> {
 	// ************************************
+	private Knowledge knowledge;
 	private Classification classification;
 	private DataSet evaluationDataset;
-	private float[][] params;
+	private float[][] params = HomoTriangle_2_3_4_5.getParams();
 
 
 
@@ -54,15 +55,13 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 		setName("MOP1_minError_and_minNrule");
 
 		// Initialization
-		HomoTriangleKnowledgeFactory.builder()
+		this.knowledge = HomoTriangleKnowledgeFactory.builder()
 				.dimension(train.getNdim())
 				.params(params)
-				.fuzzyTermShapeName(Consts.FUZZY_TERM_SHAPE_NAME)
 				.build()
 				.create();
-
 		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
-										.knowledge(Knowledge.getInstace())
+										.knowledge(knowledge)
 										.train(train)
 										.samplingIndex(new Integer[] {})
 										.build();
@@ -83,6 +82,11 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 	}
 
 	// ************************************
+
+	/* Getter */
+	public Knowledge getKnowledge() {
+		return this.knowledge;
+	}
 
 	public DataSet getEvaluationDataset() {
 		return this.evaluationDataset;

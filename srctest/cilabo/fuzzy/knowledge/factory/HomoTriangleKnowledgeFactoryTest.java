@@ -1,5 +1,7 @@
 package cilabo.fuzzy.knowledge.factory;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import cilabo.fuzzy.knowledge.Knowledge;
@@ -22,14 +24,15 @@ public class HomoTriangleKnowledgeFactoryTest {
 				fuzzySets[i][j+1] = new FuzzyTermType(String.format("%2s", String.valueOf(j+1)), FuzzyTermType.TYPE_triangularShape, params[j]);
 			}
 		}
-		Knowledge.getInstace().setFuzzySets(fuzzySets);
+		Knowledge actual = new Knowledge();
+		actual.setFuzzySets(fuzzySets);
 
-		HomoTriangleKnowledgeFactory.builder()
+		Knowledge expected = HomoTriangleKnowledgeFactory.builder()
 							.dimension(dimension)
 							.params(params)
 							.build()
 							.create();
 
-//		assertEquals(expected.toString(), Knowledge.getInstace());
+		assertEquals(expected.toString(), actual.toString());
 	}
 }

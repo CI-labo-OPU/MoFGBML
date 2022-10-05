@@ -39,13 +39,14 @@ public class FuzzyClassifierMain {
 		Input.inputSingleLabelDataSet(train, dataName);
 
 		// Initialization Knowledge Base
-		HomoTriangleKnowledgeFactory.builder().dimension(train.getNdim())
-												.params(HomoTriangle_3.getParams())
-												.build()
-												.create();
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+				.dimension(train.getNdim())
+				.params(HomoTriangle_3.getParams())
+				.build()
+				.create();
 
 		// Learning Fuzzy Classifier
-		RuleBasedClassifier classifier = makeSingleLabelClassifier(train, Knowledge.getInstace());
+		RuleBasedClassifier classifier = makeSingleLabelClassifier(train, knowledge);
 
 		// Evaluation
 		int numberOfRules = classifier.getRuleNum();
