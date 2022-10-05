@@ -4,6 +4,7 @@ python/
 results/
 doc/
 dataset/
+target/
 
 RUNjar.ps1
 .DS_Store
