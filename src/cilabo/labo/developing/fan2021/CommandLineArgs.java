@@ -40,7 +40,6 @@ public class CommandLineArgs extends AbstractArgs {
 		Output.mkdirs(Consts.ALGORITHM_ID_DIR);
 
 		experimentID = args[2];
-
 		Consts.EXPERIMENT_ID_DIR = Consts.ALGORITHM_ID_DIR + File.separator + dataName + File.separator + experimentID;
 		Output.mkdirs(Consts.EXPERIMENT_ID_DIR);
 
