@@ -45,7 +45,7 @@ public class FuzzyClassifierMain {
 												.create();
 
 		// Learning Fuzzy Classifier
-		RuleBasedClassifier classifier = makeSingleLabelClassifier(train, Knowledge.getInstace());
+		RuleBasedClassifier classifier = makeSingleLabelClassifier(train, Knowledge.getInstance());
 
 		// Evaluation
 		int numberOfRules = classifier.getRuleNum();

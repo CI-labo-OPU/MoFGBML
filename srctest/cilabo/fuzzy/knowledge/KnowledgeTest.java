@@ -22,14 +22,14 @@ public class KnowledgeTest {
 		double diff = 0.00000001;
 
 		// Don't care
-		assertEquals(1, Knowledge.getInstace().getMembershipValue(0, 0, 0), diff);
-		assertEquals(1, Knowledge.getInstace().getMembershipValue(0.5, 0, 0), diff);
-		assertEquals(1, Knowledge.getInstace().getMembershipValue(1, 0, 0), diff);
+		assertEquals(1, Knowledge.getInstance().getMembershipValue(0, 0, 0), diff);
+		assertEquals(1, Knowledge.getInstance().getMembershipValue(0.5, 0, 0), diff);
+		assertEquals(1, Knowledge.getInstance().getMembershipValue(1, 0, 0), diff);
 
 		// Medium
 		int H = 2;
-		assertEquals(0.0, Knowledge.getInstace().getMembershipValue(0.0, 0, H), diff);
-		assertEquals(1.0, Knowledge.getInstace().getMembershipValue(0.5, 0, H), diff);
-		assertEquals(0.0, Knowledge.getInstace().getMembershipValue(1.0, 0, H), diff);
+		assertEquals(0.0, Knowledge.getInstance().getMembershipValue(0.0, 0, H), diff);
+		assertEquals(1.0, Knowledge.getInstance().getMembershipValue(0.5, 0, H), diff);
+		assertEquals(0.0, Knowledge.getInstance().getMembershipValue(1.0, 0, H), diff);
 	}
 }

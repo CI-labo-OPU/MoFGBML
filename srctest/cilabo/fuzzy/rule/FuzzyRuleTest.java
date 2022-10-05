@@ -26,7 +26,7 @@ public class FuzzyRuleTest {
 								.create();
 
 		Antecedent antecedent = Antecedent.builder()
-								.knowledge(Knowledge.getInstace())
+								.knowledge(Knowledge.getInstance())
 								.antecedentIndex(antecedentIndex)
 								.build();
 

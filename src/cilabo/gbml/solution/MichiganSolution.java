@@ -117,7 +117,7 @@ public class MichiganSolution extends DefaultIntegerSolution implements IntegerS
 //		System.out.println("using a wrong \"setVariable\" function.");
 		if(this.rule != null) {
 			this.rule.getAntecedent().setAntecedentIndexAt(index, value);
-			this.rule.getAntecedent().setAntecedentFuzzySets(index, value, Knowledge.getInstace());
+			this.rule.getAntecedent().setAntecedentFuzzySets(index, value, Knowledge.getInstance());
 		}
 		super.setVariable(index, value);
 	}

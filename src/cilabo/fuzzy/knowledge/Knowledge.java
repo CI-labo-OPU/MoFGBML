@@ -27,7 +27,7 @@ public class Knowledge {
 	// ************************************************************
 	// Methods
 
-	public static Knowledge getInstace() {
+	public static Knowledge getInstance() {
 		return instace;
 	}
 

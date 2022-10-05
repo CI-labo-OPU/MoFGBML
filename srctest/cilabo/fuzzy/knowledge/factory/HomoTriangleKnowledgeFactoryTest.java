@@ -22,7 +22,7 @@ public class HomoTriangleKnowledgeFactoryTest {
 				fuzzySets[i][j+1] = new FuzzyTermType(String.format("%2s", String.valueOf(j+1)), FuzzyTermType.TYPE_triangularShape, params[j]);
 			}
 		}
-		Knowledge.getInstace().setFuzzySets(fuzzySets);
+		Knowledge.getInstance().setFuzzySets(fuzzySets);
 
 		HomoTriangleKnowledgeFactory.builder()
 							.dimension(dimension)

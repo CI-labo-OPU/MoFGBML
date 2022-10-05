@@ -28,7 +28,7 @@ public class HeuristicRuleGenerationTest {
 								.create();
 
 
-		HeuristicRuleGeneration generator = new HeuristicRuleGeneration(Knowledge.getInstace());
+		HeuristicRuleGeneration generator = new HeuristicRuleGeneration(Knowledge.getInstance());
 
 		// TEST
 		Random.getInstance().getGEN().setSeed(0);

@@ -60,7 +60,7 @@ public class MOP1<S extends Solution<?>> extends AbstractPitssburghGBML_Problem<
 				.build()
 				.create();
 		AntecedentFactory antecedentFactory = HeuristicRuleGenerationMethod.builder()
-										.knowledge(Knowledge.getInstace())
+										.knowledge(Knowledge.getInstance())
 										.train(train)
 										.samplingIndex(new Integer[] {})
 										.build();

@@ -108,7 +108,7 @@ public class Test {
 								.params(params)
 								.build()
 								.create();
-		return Knowledge.getInstace();
+		return Knowledge.getInstance();
 	}
 
 	private static RuleBasedClassifier makeTestClassifier() {
@@ -128,7 +128,7 @@ public class Test {
 		PreProcessing preProcessing = new NopPreProcessing();
 
 		AntecedentFactory antecedentFactory = AllCombinationAntecedentFactory.builder()
-												.knowledge(Knowledge.getInstace())
+												.knowledge(Knowledge.getInstance())
 												.build();
 		int ruleNum = ((AllCombinationAntecedentFactory)antecedentFactory).getRuleNum();
 

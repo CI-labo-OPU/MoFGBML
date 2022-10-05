@@ -52,7 +52,7 @@ public class HybridGBMLcrossoverTest {
 
 		/* Michigan operation*/
 		MichiganOperation michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-															Knowledge.getInstace(),
+															Knowledge.getInstance(),
 				 											problem.getConsequentFactory());
 		String doCrossover = michiganX.doCrossover(1.0, parent).get(0).toString();
 
@@ -102,7 +102,7 @@ public class HybridGBMLcrossoverTest {
 
 		/* Michigan operation*/
 		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-																			Knowledge.getInstace(),
+																			Knowledge.getInstance(),
 				 															problem.getConsequentFactory());
 		/* Pittsburgh operation */
 		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);

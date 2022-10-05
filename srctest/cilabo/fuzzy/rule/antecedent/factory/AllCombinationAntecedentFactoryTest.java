@@ -25,7 +25,7 @@ public class AllCombinationAntecedentFactoryTest {
 								.create();
 
 		AllCombinationAntecedentFactory factory = AllCombinationAntecedentFactory.builder()
-													.knowledge(Knowledge.getInstace())
+													.knowledge(Knowledge.getInstance())
 													.build();
 
 		String[] actual = new String[]

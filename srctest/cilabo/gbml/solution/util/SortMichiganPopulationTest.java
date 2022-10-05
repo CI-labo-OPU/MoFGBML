@@ -47,23 +47,23 @@ public class SortMichiganPopulationTest {
 		// Make Population
 		Antecedent[] antecedents = new Antecedent[5];
 		antecedents[0] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 0, 5})
 				.build();
 		antecedents[1] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 5, 4})
 				.build();
 		antecedents[2] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 5, 1})
 				.build();
 		antecedents[3] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {5, 0, 0, 0})
 				.build();
 		antecedents[4] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 5, 0, 0})
 				.build();
 
@@ -86,23 +86,23 @@ public class SortMichiganPopulationTest {
 		// Make Answer sorted Population
 		antecedents = new Antecedent[5];
 		antecedents[0] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 0, 5})
 				.build();
 		antecedents[1] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 5, 1})
 				.build();
 		antecedents[2] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 5, 4})
 				.build();
 		antecedents[3] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 5, 0, 0})
 				.build();
 		antecedents[4] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {5, 0, 0, 0})
 				.build();
 

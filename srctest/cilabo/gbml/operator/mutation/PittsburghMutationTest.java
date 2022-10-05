@@ -35,7 +35,7 @@ public class PittsburghMutationTest {
 		String beforeString = solution.toString();
 //		System.out.println(beforeString);
 
-		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(Knowledge.getInstace(), train);
+		MutationOperator<IntegerSolution> mutation = new PittsburghMutation(Knowledge.getInstance(), train);
 		mutation.execute(solution);
 
 		String afterString = solution.toString();

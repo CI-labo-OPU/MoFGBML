@@ -102,7 +102,7 @@ public class ProgrammingExercise_MichiganFGBML {
 		// Mutation
 		double mutationProbability = 1.0 / (double)train.getNdim();
 		MutationOperator<IntegerSolution> mutation = new MichiganMutation(mutationProbability,
-																	  Knowledge.getInstace(),
+																	  Knowledge.getInstance(),
 																	  train);
 		// Termination
 		int generation = 1000;
@@ -112,7 +112,7 @@ public class ProgrammingExercise_MichiganFGBML {
 		// Variation
 		Variation<IntegerSolution> variation = new MichiganSolutionVariation<>(
 													offspringPopulationSize, crossover, mutation,
-													Knowledge.getInstace(),
+													Knowledge.getInstance(),
 													problem.getConsequentFactory());
 		// Replacement
 		Replacement<IntegerSolution> replacement = new SingleObjectiveMaximizeReplacementWithoutOffspringFitness<>();
@@ -183,7 +183,7 @@ public class ProgrammingExercise_MichiganFGBML {
 		// Test Rule: 0 4 0 3 3 0 0 0
 		int[] antecedentIndex = new int[] {0, 4, 0, 3, 3, 0, 0, 0};
 		Antecedent antecedent = Antecedent.builder()
-								.knowledge(Knowledge.getInstace())
+								.knowledge(Knowledge.getInstance())
 								.antecedentIndex(antecedentIndex)
 								.build();
 		ConsequentFactory consequentFactory = new MoFGBML_Learning(train);
@@ -204,15 +204,15 @@ public class ProgrammingExercise_MichiganFGBML {
 		 */
 		Antecedent[] antecedents = new Antecedent[3];
 		antecedents[0] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 0, 0, 2, 0, 0, 0, 0})
 				.build();
 		antecedents[1] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 4, 0, 0, 3, 0, 0, 4})
 				.build();
 		antecedents[2] = Antecedent.builder()
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.antecedentIndex(new int[] {0, 1, 0, 3, 1, 2, 0, 0})
 				.build();
 

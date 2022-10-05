@@ -44,7 +44,7 @@ public class HomoTriangleKnowledgeFactory implements KnowledgeFactory {
 		}
 
 		// Create
-		Knowledge knowledge = Knowledge.getInstace();
+		Knowledge knowledge = Knowledge.getInstance();
 		knowledge.setFuzzySets(fuzzySets);
 
 		return;

@@ -32,7 +32,7 @@ public class HeuristicRuleGenerationMethodTest {
 
 		Integer[] samplingIndex = new Integer[] {0, 1};
 		HeuristicRuleGenerationMethod factory = HeuristicRuleGenerationMethod.builder()
-												.knowledge(Knowledge.getInstace())
+												.knowledge(Knowledge.getInstance())
 												.train(train)
 												.samplingIndex(samplingIndex)
 												.build();

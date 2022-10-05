@@ -23,7 +23,7 @@ public class AntecedentTest {
 								.create();
 
 		Antecedent antecedent = Antecedent.builder()
-								.knowledge(Knowledge.getInstace())
+								.knowledge(Knowledge.getInstance())
 								.antecedentIndex(antecedentIndex)
 								.build();
 
@@ -45,7 +45,7 @@ public class AntecedentTest {
 
 		int[] antecedentIndex = new int[] {-1, 0, -2};
 		Antecedent antecedent = Antecedent.builder()
-									.knowledge(Knowledge.getInstace())
+									.knowledge(Knowledge.getInstance())
 									.antecedentIndex(antecedentIndex)
 									.build();
 

@@ -37,7 +37,7 @@ public class FuzzyClassifierFactoryTest {
 								.params(params)
 								.build()
 								.create();
-		return Knowledge.getInstace();
+		return Knowledge.getInstance();
 	}
 
 

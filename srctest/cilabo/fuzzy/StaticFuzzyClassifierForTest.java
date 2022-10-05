@@ -36,7 +36,7 @@ public class StaticFuzzyClassifierForTest {
 		PreProcessing preProcessing = new NopPreProcessing();
 
 		AntecedentFactory antecedentFactory = AllCombinationAntecedentFactory.builder()
-												.knowledge(Knowledge.getInstace())
+												.knowledge(Knowledge.getInstance())
 												.build();
 		int ruleNum = ((AllCombinationAntecedentFactory)antecedentFactory).getRuleNum();
 
@@ -74,7 +74,7 @@ public class StaticFuzzyClassifierForTest {
 		PreProcessing preProcessing = new NopPreProcessing();
 
 		AntecedentFactory antecedentFactory = AllCombinationAntecedentFactory.builder()
-												.knowledge(Knowledge.getInstace())
+												.knowledge(Knowledge.getInstance())
 												.build();
 		int ruleNum = ((AllCombinationAntecedentFactory)antecedentFactory).getRuleNum();
 

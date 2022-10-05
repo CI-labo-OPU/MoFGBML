@@ -50,7 +50,7 @@ public class ProblemMichiganFGBML<S extends Solution<?>> extends AbstractMichiga
 				.create();
 		AntecedentFactory antecedentFactory = RandomInitialization.builder()
 				.seed(seed)
-				.knowledge(Knowledge.getInstace())
+				.knowledge(Knowledge.getInstance())
 				.train(train)
 				.build();
 		ConsequentFactory consequentFactory = MoFGBML_Learning.builder()
@@ -64,7 +64,7 @@ public class ProblemMichiganFGBML<S extends Solution<?>> extends AbstractMichiga
 	    List<Integer> upperLimit = new ArrayList<>(getNumberOfVariables());
 	    for (int i = 0; i < getNumberOfVariables(); i++) {
 	      lowerLimit.add(0);
-	      upperLimit.add(Knowledge.getInstace().getFuzzySetNum(i));
+	      upperLimit.add(Knowledge.getInstance().getFuzzySetNum(i));
 	    }
 	    setVariableBounds(lowerLimit, upperLimit);
 	}
