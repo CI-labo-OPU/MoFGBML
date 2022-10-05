@@ -18,14 +18,14 @@ public class AllCombinationAntecedentFactoryTest {
 			new float[] {0f, 0.5f, 1f},
 			new float[] {0.5f, 1f, 1f}
 		};
-		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
 								.create();
 
 		AllCombinationAntecedentFactory factory = AllCombinationAntecedentFactory.builder()
-													.knowledge(knowledge)
+													.knowledge(Knowledge.getInstance())
 													.build();
 
 		String[] actual = new String[]

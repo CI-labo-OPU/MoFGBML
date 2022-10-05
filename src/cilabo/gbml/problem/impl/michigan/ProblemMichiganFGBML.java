@@ -15,7 +15,7 @@ import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
 import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.fuzzy.knowledge.factory.HomoTriangleKnowledgeFactory;
-import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3;
+import cilabo.fuzzy.knowledge.membershipParams.HomoTriangle_2_3_4_5;
 import cilabo.fuzzy.rule.RejectedRule;
 import cilabo.fuzzy.rule.Rule;
 import cilabo.fuzzy.rule.antecedent.Antecedent;
@@ -31,7 +31,6 @@ import cilabo.gbml.solution.util.attribute.NumberOfWinner;
 public class ProblemMichiganFGBML<S extends Solution<?>> extends AbstractMichiganGBML_Problem<S> {
 	// ************************************************************
 	// Fields
-	private Knowledge knowledge;
 	private DataSet evaluationDataset;
 
 	// ************************************************************
@@ -44,14 +43,14 @@ public class ProblemMichiganFGBML<S extends Solution<?>> extends AbstractMichiga
 		setName("MichiganFGBML");
 
 		// Initialization
-		this.knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 				.dimension(train.getNdim())
-				.params(HomoTriangle_2_3.getParams())
+				.params(HomoTriangle_2_3_4_5.getParams())
 				.build()
 				.create();
 		AntecedentFactory antecedentFactory = RandomInitialization.builder()
 				.seed(seed)
-				.knowledge(knowledge)
+				.knowledge(Knowledge.getInstance())
 				.train(train)
 				.build();
 		ConsequentFactory consequentFactory = MoFGBML_Learning.builder()
@@ -65,18 +64,13 @@ public class ProblemMichiganFGBML<S extends Solution<?>> extends AbstractMichiga
 	    List<Integer> upperLimit = new ArrayList<>(getNumberOfVariables());
 	    for (int i = 0; i < getNumberOfVariables(); i++) {
 	      lowerLimit.add(0);
-	      upperLimit.add(knowledge.getFuzzySetNum(i));
+	      upperLimit.add(Knowledge.getInstance().getFuzzySetNum(i));
 	    }
 	    setVariableBounds(lowerLimit, upperLimit);
 	}
 
 	// ************************************************************
 	// Methods
-
-	/* Getter */
-	public Knowledge getKnowledge() {
-		return this.knowledge;
-	}
 
 	/* Setter */
 	public void setEvaluationDataset(DataSet evaluationDataset) {
