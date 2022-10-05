@@ -1,15 +1,14 @@
 bin/
-target/
 copy/
 python/
 results/
 doc/
 dataset/
 
+RUNjar.ps1
 .DS_Store
 jMetal.log
 jMetal.log.1
 jMetal.*
 FUN.csv
 VAR.csv
-

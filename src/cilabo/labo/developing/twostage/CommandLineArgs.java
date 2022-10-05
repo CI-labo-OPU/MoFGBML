@@ -1,4 +1,4 @@
-package cilabo.labo.developing.fan2021;
+package cilabo.labo.developing.twostage;
 
 import java.io.File;
 
@@ -40,8 +40,7 @@ public class CommandLineArgs extends AbstractArgs {
 		Output.mkdirs(Consts.ALGORITHM_ID_DIR);
 
 		experimentID = args[2];
-
-		Consts.EXPERIMENT_ID_DIR = Consts.ALGORITHM_ID_DIR + File.separator + dataName + File.separator + experimentID;
+		Consts.EXPERIMENT_ID_DIR = Consts.ALGORITHM_ID_DIR + File.separator + dataName+"_"+experimentID;
 		Output.mkdirs(Consts.EXPERIMENT_ID_DIR);
 
 		parallelCores = Integer.parseInt(args[3]);
