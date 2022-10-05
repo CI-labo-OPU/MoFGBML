@@ -32,12 +32,12 @@ public class FuzzyClassifierFactoryTest {
 
 		int dimension = train.getNdim();
 		float[][] params = HomoTriangle_3.getParams();
-		HomoTriangleKnowledgeFactory.builder()
+		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
 								.create();
-		return Knowledge.getInstace();
+		return knowledge;
 	}
 
 

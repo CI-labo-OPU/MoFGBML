@@ -20,11 +20,14 @@ public class ConstsTest {
 		assertEquals(nowUNIX, UNIX);
 
 		// Integer
-		assertEquals(Consts.ANTECEDENT_LEN, 5);
+		assertEquals(Consts.ANTECEDENT_LEN, -1);
 
 		// Double
 		double delta = 0.000000001;
-		assertEquals(Consts.DONT_CARE_RT, 0.8, delta);
+		assertEquals(Consts.DONT_CARE_RT, -0.4, delta);
+
+		// String
+		assertEquals(Consts.ROOTFOLDER, "testConstsForJUnit");
 
 		String loadedConsts = Consts.getString();
 		assertNotSame(loadedConsts, originConsts);

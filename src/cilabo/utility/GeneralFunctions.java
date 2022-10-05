@@ -2,8 +2,6 @@ package cilabo.utility;
 
 import java.util.ArrayList;
 
-import cilabo.fuzzy.rule.antecedent.Antecedent;
-import jfml.term.FuzzyTermType;
 import random.MersenneTwisterFast;
 
 
@@ -144,62 +142,5 @@ public class GeneralFunctions {
 		}
 		return ans;
 	}
-
-
-	public static String toString(int[] tmp) {
-		String str = "[" + String.valueOf(tmp[0]);
-		for(int i=1; i<tmp.length; i++) {str += ", " + String.valueOf(tmp[i]);}
-		str += "]";
-		return str;
-	}
-
-	public static String toString(Antecedent tmp) {
-		FuzzyTermType[] buf = tmp.getAntecedentFuzzySets();
-		String str = "[" + buf[0].getName().replace(" ", "");
-		for(int i=1; i<buf.length; i++) {str += ", " + buf[i].getName().replace(" ", "");}
-		str += "]";
-		return str;
-	}
-
-/** 挙動テスト用関数*/
-//	public static <S> void test(List<S> tmp, String str) {
-//		for(S gg: tmp) {
-//			List<IntegerSolution> buf = ((PittsburghSolution) gg).getMichiganPopulation();
-//			for(IntegerSolution buf_i_: buf) {
-//				MichiganSolution buf_i = (MichiganSolution) buf_i_;
-//
-//				if(!buf_i.getVariables().toString().equals(GeneralFunctions.toString(buf_i.getRule().getAntecedent()))) {
-//					System.out.print(str + " ");
-//					System.out.print(GeneralFunctions.toString(buf_i.getRule().getAntecedent()) + " ");
-//					System.out.print(buf_i.getVariables().toString() + " ");
-//				}
-//			}
-//		}
-//		return;
-//	}
-//
-//	public static <S> void test2(PittsburghSolution solution, String str) {
-//		List<IntegerSolution> buf = solution.getMichiganPopulation();
-//		for(IntegerSolution buf_i_: buf) {
-//			MichiganSolution buf_i = (MichiganSolution) buf_i_;
-//
-//			if(!buf_i.getVariables().toString().equals(GeneralFunctions.toString(buf_i.getRule().getAntecedent()))) {
-//				System.out.print(str + " ");
-//				System.out.print(GeneralFunctions.toString(buf_i.getRule().getAntecedent()) + " ");
-//				System.out.print(buf_i.getVariables().toString() + " ");
-//				System.out.println();
-//			}
-//		}
-//		return;
-//	}
-//
-//	private void test3(MichiganSolution solution, String str) {
-//		if(!solution.getVariables().toString().equals(GeneralFunctions.toString(solution.getRule().getAntecedent()))) {
-//			System.out.print(str + " ");
-//			System.out.print(GeneralFunctions.toString(solution.getRule().getAntecedent()) + " ");
-//			System.out.print(solution.getVariables().toString() + " ");
-//			System.out.println();
-//		}
-//	}
 
 }

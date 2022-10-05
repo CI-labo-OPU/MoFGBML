@@ -9,9 +9,9 @@ import jfml.term.FuzzyTermType;
 public class Antecedent {
 	// ************************************************************
 	// Fields
-	protected int[] antecedentIndex;
+	int[] antecedentIndex;
 
-	protected FuzzyTermType[] antecedentFuzzySets;
+	FuzzyTermType[] antecedentFuzzySets;
 
 	// ************************************************************
 	// Constructor
@@ -55,7 +55,7 @@ public class Antecedent {
 	 */
 	public Antecedent deepcopy() {
 		int[] antecedentIndex = Arrays.copyOf(this.antecedentIndex, this.antecedentIndex.length);
-		return new Antecedent(antecedentIndex, this.antecedentFuzzySets.clone());
+		return new Antecedent(antecedentIndex, this.antecedentFuzzySets);
 	}
 
 	/**
@@ -91,7 +91,6 @@ public class Antecedent {
 		return this.antecedentIndex[dimension];
 	}
 
-
 	/**
 	 *
 	 */
@@ -108,9 +107,6 @@ public class Antecedent {
 		return this.antecedentFuzzySets[index];
 	}
 
-	public FuzzyTermType[] getAntecedentFuzzySets() {
-		return this.antecedentFuzzySets;
-	}
 	/**
 	 *
 	 */
@@ -122,25 +118,6 @@ public class Antecedent {
 			}
 		}
 		return length;
-	}
-
-	public void setAntecedentFuzzySets(int dimension, FuzzyTermType antecedentFuzzySet) {
-		this.antecedentFuzzySets[dimension] = antecedentFuzzySet;
-	}
-
-	public void setAntecedentFuzzySets(int dimension, int antecedentIndex, Knowledge knowledge) {
-		if(antecedentIndex < 0) {
-			// Categorical
-			this.antecedentFuzzySets[dimension] = null;
-		}
-		else {
-			// Numerical
-			this.antecedentFuzzySets[dimension] = knowledge.getFuzzySet(dimension, antecedentIndex);
-		}
-	}
-
-	public void setAntecedentIndexAt(int dimension, int antecedentIndex) {
-		this.antecedentIndex[dimension] = antecedentIndex;
 	}
 
 	@Override

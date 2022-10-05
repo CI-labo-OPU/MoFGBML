@@ -25,7 +25,7 @@ public class HomoTriangleKnowledgeFactory implements KnowledgeFactory {
 	// Methods
 
 	@Override
-	public void create() {
+	public Knowledge create() {
 		int fuzzySetNum = params.length;
 
 		// make fuzzy sets
@@ -44,10 +44,10 @@ public class HomoTriangleKnowledgeFactory implements KnowledgeFactory {
 		}
 
 		// Create
-		Knowledge knowledge = Knowledge.getInstace();
+		Knowledge knowledge = new Knowledge();
 		knowledge.setFuzzySets(fuzzySets);
 
-		return;
+		return knowledge;
 	}
 
 	public static HomoTriangleKnowledgeFactory.KnowledgeBuilder builder() {

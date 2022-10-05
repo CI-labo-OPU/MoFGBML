@@ -1,16 +1,16 @@
 bin/
+target/
 copy/
 python/
 results/
 doc/
+dataset/german/
+dataset/phoneme/
 
-dataset/
-
-
-RUNjar.ps1
 .DS_Store
 jMetal.log
 jMetal.log.1
 jMetal.*
 FUN.csv
 VAR.csv
+
