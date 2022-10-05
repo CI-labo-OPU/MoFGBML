@@ -86,6 +86,7 @@ public class Consts {
 	public static String TIMES = "times";
 
 
+	public static final String XML_FILE_NAME = "rersults_XML";
 	/******************************************/
 
 	public static void set(String source) {

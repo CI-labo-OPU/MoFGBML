@@ -24,7 +24,6 @@ public class RuleMutationTest {
 		// Problem
 		int seed = 0;
 		Problem<IntegerSolution> problem = new ProblemMichiganFGBML<>(seed, train);
-		Knowledge knowledge = ((ProblemMichiganFGBML<?>)problem).getKnowledge();
 
 		// Solution
 		IntegerSolution solution = problem.createSolution();
@@ -34,7 +33,7 @@ public class RuleMutationTest {
 		// Operator
 		double mutationProbability = 1.0 / (double)train.getDataSize();
 		mutationProbability = 1.0;
-		MichiganMutation mutation = new MichiganMutation(mutationProbability, knowledge, train);
+		MichiganMutation mutation = new MichiganMutation(mutationProbability, Knowledge.getInstance(), train);
 		mutation.execute(solution);
 //		System.out.println("[new solution]");
 //		System.out.println(solution.toString());
