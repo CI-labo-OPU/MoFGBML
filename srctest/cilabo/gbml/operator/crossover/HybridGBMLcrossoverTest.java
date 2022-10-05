@@ -12,6 +12,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 import cilabo.data.DataSet;
 import cilabo.fuzzy.classifier.operator.classification.Classification;
 import cilabo.fuzzy.classifier.operator.classification.factory.SingleWinnerRuleSelection;
+import cilabo.fuzzy.knowledge.Knowledge;
 import cilabo.gbml.problem.impl.michigan.ProblemMichiganFGBML;
 import cilabo.gbml.problem.impl.pittsburgh.MOP1;
 import cilabo.gbml.solution.PittsburghSolution;
@@ -51,7 +52,7 @@ public class HybridGBMLcrossoverTest {
 
 		/* Michigan operation*/
 		MichiganOperation michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-				 											problem.getKnowledge(),
+															Knowledge.getInstance(),
 				 											problem.getConsequentFactory());
 		String doCrossover = michiganX.doCrossover(1.0, parent).get(0).toString();
 
@@ -95,14 +96,14 @@ public class HybridGBMLcrossoverTest {
 
 		// Crossover
 		double probability = 1.0;
-//		double michiganOperationProbability = Consts.MICHIGAN_OPE_RT;
+		double michiganOperationProbability = Consts.MICHIGAN_OPE_RT;
 //		double michiganOperationProbability = 1.0;	// Only Michigan operation: OK
-		double michiganOperationProbability = 0.0;	// Only Pittsburgh operation: OK
+//		double michiganOperationProbability = 0.0;	// Only Pittsburgh operation: OK
 
 		/* Michigan operation*/
 		CrossoverOperator<IntegerSolution> michiganX = new MichiganOperation(Consts.MICHIGAN_CROSS_RT,
-				 															 problem.getKnowledge(),
-				 															 problem.getConsequentFactory());
+																			Knowledge.getInstance(),
+				 															problem.getConsequentFactory());
 		/* Pittsburgh operation */
 		CrossoverOperator<IntegerSolution> pittsburghX = new PittsburghCrossover(Consts.PITTSBURGH_CROSS_RT);
 		/* Hybrid-style crossover */

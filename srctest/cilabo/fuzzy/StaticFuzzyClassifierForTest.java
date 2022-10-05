@@ -27,7 +27,7 @@ public class StaticFuzzyClassifierForTest {
 	public static RuleBasedClassifier makeSingleLabelClassifier(DataSet train) {
 		int dimension = train.getNdim();
 		float[][] params = HomoTriangle_3.getParams();
-		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
@@ -36,7 +36,7 @@ public class StaticFuzzyClassifierForTest {
 		PreProcessing preProcessing = new NopPreProcessing();
 
 		AntecedentFactory antecedentFactory = AllCombinationAntecedentFactory.builder()
-												.knowledge(knowledge)
+												.knowledge(Knowledge.getInstance())
 												.build();
 		int ruleNum = ((AllCombinationAntecedentFactory)antecedentFactory).getRuleNum();
 
@@ -65,7 +65,7 @@ public class StaticFuzzyClassifierForTest {
 	public static RuleBasedClassifier makeMultiLabelClassifier(DataSet train) {
 		int dimension = train.getNdim();
 		float[][] params = HomoTriangle_2_3_4_5.getParams();
-		Knowledge knowledge = HomoTriangleKnowledgeFactory.builder()
+		HomoTriangleKnowledgeFactory.builder()
 								.dimension(dimension)
 								.params(params)
 								.build()
@@ -74,7 +74,7 @@ public class StaticFuzzyClassifierForTest {
 		PreProcessing preProcessing = new NopPreProcessing();
 
 		AntecedentFactory antecedentFactory = AllCombinationAntecedentFactory.builder()
-												.knowledge(knowledge)
+												.knowledge(Knowledge.getInstance())
 												.build();
 		int ruleNum = ((AllCombinationAntecedentFactory)antecedentFactory).getRuleNum();
 
